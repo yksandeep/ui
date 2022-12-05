@@ -1,14 +1,14 @@
 import React from "react";
 import { Card, CardLink } from "./index.styled";
 
-export interface ITesting {
+export interface IDemo {
   sampleTextProp: string;
 }
 
-// export const Testing: React.FC<ITesting> = ({ sampleTextProp }) => {
+// export const Demo: React.FC<IDemo> = ({ sampleTextProp }) => {
 //   return <div className={styles.container}>{sampleTextProp}</div>;
 // };
-export const Testing: React.FC<ITesting> = ({ sampleTextProp }) => {
+export const Demo: React.FC<IDemo> = ({ sampleTextProp }) => {
   return (
     <div
       style={{
@@ -19,11 +19,11 @@ export const Testing: React.FC<ITesting> = ({ sampleTextProp }) => {
       }}
     >
       <p>Card with DIV HTML Tag</p>
-      <Card>Testing Component </Card>
+      <Card>Demo Component </Card>
       <p>Card with Anchor link (a) HTML Tag</p>
       <CardLink href="#">{sampleTextProp} Link</CardLink>
     </div>
   );
 };
 
-export default Testing;
+export default Demo;

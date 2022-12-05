@@ -1,10 +1,10 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.mockTestProps = void 0;
+exports.mockDemoProps = void 0;
 const base = {
-    sampleTextProp: "Test Component",
+    sampleTextProp: "Demo Component",
 };
-exports.mockTestProps = {
+exports.mockDemoProps = {
     base,
 };
 //# sourceMappingURL=index.mock.js.map

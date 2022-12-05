@@ -1,7 +1,7 @@
 const base = {
-    sampleTextProp: "Test Component",
+    sampleTextProp: "Demo Component",
 };
-export const mockTestProps = {
+export const mockDemoProps = {
     base,
 };
 //# sourceMappingURL=index.mock.js.map
