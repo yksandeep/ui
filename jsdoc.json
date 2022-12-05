@@ -1,0 +1,33 @@
+{
+  "source": {
+    "include": ["src"],
+    "includePattern": ".+\\.t(doc|x|s|sx)?$",
+    "excludePattern": ".+\\.(test|spec|stories).t(s|sx)"
+  },
+  "tags": {
+    "allowUnknownTags": "all"
+  },
+  "plugins": [
+    "plugins/markdown",
+    "node_modules/jsdoc-babel",
+    "node_modules/better-docs/component",
+    "node_modules/better-docs/typescript",
+    "node_modules/better-docs/category"
+  ],
+  "templates": {
+    "cleverLinks": true,
+    "monospaceLinks": true,
+    "search": true,
+    "better-docs": {
+      "name": "React component library"
+    }
+  },
+  "opts": {
+    "destination": "docs",
+    "verbose": true,
+    "recurse": true,
+    "readme": "README.md",
+    "template": "node_modules/better-docs",
+    "private": true
+  }
+}

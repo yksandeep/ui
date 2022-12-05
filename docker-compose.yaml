@@ -1,0 +1,30 @@
+version: "3"
+
+services:
+  reactlibstorybook:
+    build:
+      context: ./
+      dockerfile: storyDockerfile
+    container_name: reactlibstorybook
+    volumes:
+      - .:/home/appuser/react-lib
+    ports:
+      - "6006:6006"
+    networks:
+      - app-network
+
+  reactlibjsdoc:
+    build:
+      context: ./
+      dockerfile: jsdocDockerfile
+    container_name: reactlibjsdoc
+    volumes:
+      - ./docs:/usr/share/nginx/html
+    ports:
+      - "8080:80"
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
