@@ -108,9 +108,9 @@
 
 
     <section>
-        <article><h2>React Component Library</h2>
+        <article><h2><b>React Component Library</b></h2>
 <br/>
-<h3>Install yarn</h3>
+<h3><b>Install yarn</b></h3>
 <h4>Install via npm</h4>
 <pre class="prettyprint source"><code>$ npm install --global yarn
 </code></pre>
@@ -124,17 +124,45 @@
 </code></pre>
 <br/>
 <p>docker is required to perform next step</p>
-<h3>For storybook and jsDoc documentation</h3>
+<h3><b>For storybook and jsDoc documentation</b></h3>
 <pre class="prettyprint source"><code>$ docker-compose up
 </code></pre>
 <br/>
-<p>Run the below CMD to build JSDoc on save changes</p>
-<h3>For storybook and jsDoc documentation</h3>
-<pre class="prettyprint source"><code>$ npm run watch:jsDoc
+<h3><b>Run the below CMD to build JSDoc on save changes</b></h3>
+<pre class="prettyprint source"><code>$ yarn run watch:jsDoc
 </code></pre>
 <br/>
-<h3>To test your Component in the playground</h3>
-<pre class="prettyprint source"><code>$ npm run storybook
+<h3><b>To test your Component in the playground</b></h3>
+<pre class="prettyprint source"><code>$ yarn run storybook
+</code></pre>
+<br/>
+<h3><b>To Add new component in this run cmd and follow the steps</b></h3>
+<pre class="prettyprint source"><code>$ yarn run create-component
+</code></pre>
+<br/>
+#### Note for devlopment(using: <i><b>yalc</b></i>)
+<pre class="prettyprint source"><code>When using yalc, Add &quot;postyalc&quot; into package.json.
+To avoid module not found (it will not add anything
+inside the package.json file if the yalc project
+(&lt;my-package>) has dependencies)
+
+...
+  &quot;scripts&quot;:{
+    ...
+    &quot;postyalc&quot;: &quot;yarn&quot;
+    ...
+  }
+...
+
+To automatically install local pacakage dependencies as yalc
+does not out of the box install or run yarn/npm install after
+yalc add &lt;my-package>
+
+When using yalc link in consumer/other project folder it will
+not touch package.json file and node_modules folder. You will have
+to import the local package installed with yalc from .yalc in the
+root_dir. And there will be no effect postyalc script
+
 </code></pre></article>
     </section>
 

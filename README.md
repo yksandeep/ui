@@ -87,3 +87,29 @@ to import the local package installed with yalc from .yalc in the
 root_dir. And there will be no effect postyalc script
 
 ```
+
+<br/>
+
+### <b>To Commit to git we have to follow a convention</b>
+
+```
+git commit -m '<prefix>: implement commitlint'
+
+Prefix:[
+        "build",
+        "chore",
+        "ci",
+        "docs",
+        "feat",
+        "fix",
+        "perf",
+        "refactor",
+        "revert",
+        "style",
+        "test",
+        "translation",
+        "security",
+        "changeset",
+      ],
+
+```
