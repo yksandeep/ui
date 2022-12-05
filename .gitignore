@@ -26,6 +26,5 @@ yarn-error.log*
 *.error.log
 /.parcel-cache
 tsconfig.tsbuildinfo
-stories
 
 
