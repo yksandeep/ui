@@ -1,96 +1,12 @@
-"use strict";
-import fs, { promises as fsPromise } from "fs";
+import fs from "fs";
 import fse from "fs-extra";
+import fsPromise from "fs/promises";
 import inquirer from "inquirer";
 import path, { join } from "path";
-import { fileURLToPath } from "url";
-import { logger } from "./helpers/loger.js";
-const __filename = fileURLToPath(import.meta.url);
-
-const __dirname = path.dirname(__filename);
-
-const COMPONENT_BASE_DIR = join(__dirname, "../", "src", "components");
-const COMPONENT_BASE_DIR_ITEMS = ["atoms", "molecules", "organism"];
-const DEFAULT_STORIES_TITLE = "Shared/Templates/Base";
-const DEFAULT_CONST = "BaseTemplate";
-
-// Base Template for the new component folder
-// const ORIGIN = join(__dirname, "../", "src", "shared", "templates", "base");
-const STYLED_COMPONENT_BASE_ORIGIN = join(
-  __dirname,
-  "./",
-  "src",
-  "shared",
-  "templates",
-  "base"
-);
-
-(async () => {
-  //if name hase space means nested component(component name should be in camel case)
-  let { type, ComponentName, cssType } = await getTypeAndNameOfComponent();
-
-  let { Base, BaseArgs, Components, Component } =
-    getAllComponentToMakeEvenNested({
-      ComponentName,
-      type,
-      BaseDir: COMPONENT_BASE_DIR,
-    });
-
-  // Checking if (atoms,molecules,organism) folder are present in COMPONENT_BASE_DIR
-  let componentBaseDirOk = await COMPONENT_BASE_DIR_OK({
-    baseDir: COMPONENT_BASE_DIR,
-    itemsToCheck: COMPONENT_BASE_DIR_ITEMS,
-  });
-
-  if (componentBaseDirOk) {
-    // Prepare Path for index.js of each new Folders created inside and what to export from parent if nested so the application will still
-    let folderToExportFrom = getPathToExportComponent({
-      Base,
-      BaseDir: COMPONENT_BASE_DIR,
-      Component,
-    });
-
-    // create Component
-    let origin = "";
-    if (cssType === "styled-components") {
-      origin = STYLED_COMPONENT_BASE_ORIGIN;
-    }
-
-    if (origin.length > 0) {
-      logging("info", `Creating ${ComponentName}`);
-      let componentCreated = await createCompo({
-        type,
-        origin: STYLED_COMPONENT_BASE_ORIGIN,
-        Base,
-        Component,
-        folderToExportFrom,
-        BaseDir: COMPONENT_BASE_DIR,
-      });
-
-      if (componentCreated) {
-        logging("info", `${ComponentName} created in ${type}`);
-      } else {
-        // rollback
-        rollback();
-      }
-    } else {
-      logging("error", `CSS Type: ${cssType} not found`);
-    }
-  } else {
-    // logging that COMPONENT_BASE_DIR is not Ok
-    logging(
-      "error",
-      `Check if folder ${COMPONENT_BASE_DIR_ITEMS} with index.ts in each folder and in ${COMPONENT_BASE_DIR} is present in ${COMPONENT_BASE_DIR} `
-    );
-  }
-  return;
-})();
-
-// ------------------------------------------------------------------------------------------------//
+import { logger } from "./loger.js";
 
 // utils
-
-function makeFirstCharCapital(item) {
+export function makeFirstCharCapital(item) {
   let text = item.split(" ");
   // Making first char Capital
   for (let i = 0; i < text.length; i++) {
@@ -100,7 +16,7 @@ function makeFirstCharCapital(item) {
   return text;
 }
 
-function COMPONENT_BASE_DIR_OK({ baseDir, itemsToCheck }) {
+export function COMPONENT_BASE_DIR_OK({ baseDir, itemsToCheck }) {
   return new Promise(async (resolve, reject) => {
     let allFolderPresentInComponentBaseDir = false;
     let dirFiles = await fsPromise.readdir(baseDir);
@@ -120,7 +36,11 @@ function COMPONENT_BASE_DIR_OK({ baseDir, itemsToCheck }) {
   });
 }
 
-function getAllComponentToMakeEvenNested({ ComponentName, type, BaseDir }) {
+export function getAllComponentToMakeEvenNested({
+  ComponentName,
+  type,
+  BaseDir,
+}) {
   // Make 1st char of ComponentName capital even if nested as we following a nameing convention
   let Components = makeFirstCharCapital(ComponentName);
 
@@ -142,13 +62,15 @@ function getAllComponentToMakeEvenNested({ ComponentName, type, BaseDir }) {
   return { Base, BaseArgs, Components, Component };
 }
 
-function createCompo({
+export function createCompo({
   type,
   origin,
   Base,
   Component,
   folderToExportFrom,
   BaseDir,
+  // defaultStoriesTitle,
+  // defaultCont
 }) {
   return new Promise(async (resolve, reject) => {
     // Create path for the
@@ -159,13 +81,13 @@ function createCompo({
       overwrite: false,
     });
 
-    // Change "BaseTemplate" from the file content of newly created component to its name
-    let madeChanges = await makeChangesToNewComponent(Base, Component);
-    if (madeChanges) {
-      logging("info", "Component Updated Created");
-    } else {
-      logging("error", "Error while making changes for Component");
-    }
+    // // Change "BaseTemplate" from the file content of newly created component to its name
+    // let madeChanges = await makeChangesToNewComponent(Base, Component,defaultStoriesTitle,defaultCont);
+    // if (madeChanges) {
+    //   logging("info", "Component Updated Created");
+    // } else {
+    //   logging("error", "Error while making changes for Component");
+    // }
 
     logging("info", "Preparing Index to export component");
     let preparedIndex = await prepareParentIndexToExportComponent({
@@ -192,7 +114,7 @@ function createCompo({
   });
 }
 
-function prepareBaseDirIndexToExportType({ type, BaseDir }) {
+export function prepareBaseDirIndexToExportType({ type, BaseDir }) {
   return new Promise(async (resolve, reject) => {
     let newExport = `export * from "./${type}";\n`;
     let result = newExport;
@@ -208,7 +130,7 @@ function prepareBaseDirIndexToExportType({ type, BaseDir }) {
   });
 }
 
-function prepareParentIndexToExportComponent({ exportsFrom }) {
+export function prepareParentIndexToExportComponent({ exportsFrom }) {
   return new Promise((resolve, reject) => {
     let indexExported = exportsFrom.map(async (item, idx) => {
       let indexPrepared = await prepareIndex(item);
@@ -221,7 +143,7 @@ function prepareParentIndexToExportComponent({ exportsFrom }) {
   });
 }
 
-function getPathToExportComponent({ Base, BaseDir, Component }) {
+export function getPathToExportComponent({ Base, BaseDir, Component }) {
   let getListOfFolders = Base.replace(`${BaseDir}/`, "").split("/");
   let toAddExportfrom = getListOfFolders.reduce(
     (acc, item, idx) => {
@@ -250,7 +172,10 @@ function getPathToExportComponent({ Base, BaseDir, Component }) {
   return toAddExportfrom;
 }
 
-function mkDirByPathSync(targetDir, { isRelativeToScript = false } = {}) {
+export function mkDirByPathSync(
+  targetDir,
+  { isRelativeToScript = false } = {}
+) {
   const sep = path.sep;
   const initDir = path.isAbsolute(targetDir) ? sep : "";
   const baseDir = isRelativeToScript ? __dirname : ".";
@@ -281,7 +206,13 @@ function mkDirByPathSync(targetDir, { isRelativeToScript = false } = {}) {
   }, initDir);
 }
 
-function makeChangesToNewComponent(Base, Component) {
+export function makeChangesToNewComponent(
+  Base,
+  Component,
+  defaultStoriesTitle,
+  defaultCont,
+  componentBaseDir
+) {
   return new Promise(async (resolve, reject) => {
     try {
       let dirFiles = await fsPromise.readdir(join(Base, Component));
@@ -291,13 +222,13 @@ function makeChangesToNewComponent(Base, Component) {
             join(Base, Component, item),
             "utf8"
           );
-          let result = replaceAllSubstring(data, DEFAULT_CONST, Component);
-          let storiesTitle_ = Base.split(`${COMPONENT_BASE_DIR}/`)[1];
+          let result = replaceAllSubstring(data, defaultCont, Component);
+          let storiesTitle_ = Base.split(`${componentBaseDir}/`)[1];
           storiesTitle_ = makeFirstCharCapital(storiesTitle_);
           if (item.includes("stories.tsx")) {
             result = replaceAllSubstring(
               result,
-              DEFAULT_STORIES_TITLE,
+              defaultStoriesTitle,
               `Components/${storiesTitle_}/${Component}`
             );
           }
@@ -315,7 +246,7 @@ function makeChangesToNewComponent(Base, Component) {
   });
 }
 
-function replaceAllSubstring(str, find, replace) {
+export function replaceAllSubstring(str, find, replace) {
   return str.replaceAll(find, replace);
 }
 // With async/await:
@@ -330,7 +261,7 @@ export async function createIndexFile(f) {
   }
 }
 
-async function prepareIndex({ indexPath, toExport }) {
+export async function prepareIndex({ indexPath, toExport }) {
   let indexFile = await createIndexFile(indexPath);
   if (indexFile.created) {
     let newExport = toExport;
@@ -347,34 +278,20 @@ async function prepareIndex({ indexPath, toExport }) {
   }
 }
 
-function getTypeAndNameOfComponent() {
+export function getUserInput({ promptQuestions }) {
   return new Promise(async (resolve, reject) => {
-    let propmt = await inquirer.prompt([
-      {
-        type: "list",
-        name: "type",
-        message: "Type of Component ?",
-        choices: ["atoms", "molecules", "organism"],
-      },
-      {
-        type: "list",
-        name: "cssType",
-        message: "Choose CSS type from below ?",
-        choices: ["styled-components"],
-      },
-      {
-        name: "ComponentName",
-        message:
-          "Name of the Component (Put spaces in between if nested)\n Component:",
-      },
-    ]);
+    let propmt = await inquirer.prompt(promptQuestions);
     resolve({ ...propmt });
   });
 }
 
-function logging(level, msg) {
+export function logging(level, msg) {
   logger.log({
     level: level,
     message: msg,
   });
+}
+
+export function rollback() {
+  logging("error", "TODO");
 }

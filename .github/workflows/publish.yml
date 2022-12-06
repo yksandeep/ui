@@ -4,12 +4,28 @@ on:
     types: [published]
 jobs:
   build:
-    runs-on: ubuntu-latest
+    name: Build on Node ${{ matrix.node }} and ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        node: ["18.x"]
+        os: [ubuntu-latest]
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout repo
+        uses: actions/checkout@v2
+
       - uses: actions/setup-node@v1
         with:
-          node-version: 18
+          node-version: ${{ matrix.node }}
           registry-url: https://registry.npmjs.org/
-      - run: yarn
-      - run: yarn build
+
+      - name: Install deps
+        run: yarn
+
+      - name: Build
+        run: yarn build
+
+      - name: Publish
+        run: npm publish --access public
+        env:
+          NODE_AUTH_TOKE: ${{secrets.NPM_TOKEN}}
