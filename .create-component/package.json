@@ -1,0 +1,16 @@
+{
+  "name": "@kumar08/create-component",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "Kumar Sandeep",
+  "type": "module",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "fs-extra": "^11.1.0",
+    "inquirer": "^9.1.4",
+    "winston": "^3.8.2"
+  }
+}
