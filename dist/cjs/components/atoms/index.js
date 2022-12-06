@@ -17,4 +17,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 __exportStar(require("./Button"), exports);
 __exportStar(require("./Demo"), exports);
 __exportStar(require("./TextField"), exports);
+__exportStar(require("./Demo2"), exports);
+__exportStar(require("./Demo3"), exports);
 //# sourceMappingURL=index.js.map

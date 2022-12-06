@@ -29,7 +29,6 @@ module.exports = {
     "type-enum": [
       2,
       "always",
-      // below are the commit message prefix follow by ": "
       [
         "build",
         "chore",
