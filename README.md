@@ -167,6 +167,7 @@ Prefix:[
         "translation",
         "security",
         "changeset",
+        "patch_version"
       ],
 
 To know more about prefix checkout commitlint.config.js
