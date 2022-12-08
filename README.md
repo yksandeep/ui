@@ -4,7 +4,7 @@
 
 By default everthing is exported from `"src" as const`. Change the index.ts file for the exports according to your convenience.
 
-This project uses yalc for testing in other local project and Husky for git commit linting. If you dont want commit liniting you can remove .husky folder and below from `package.json` file or you can configure according to your need using `commitlint.config.js`
+This project uses yalc for testing in other local project and Husky for git commit linting. If you dont want commit liniting you can remove .husky folder and the below mentioned script from `package.json` file or you can configure according to your need, using `commitlint.config.js`
 
 ```json
 
@@ -92,25 +92,25 @@ docker-compose up
 
 ## Publishing
 
-For Publishing using github webhooks we need NPM Automation token Access Token
+For Publishing using github webhooks we need NPM Automation token Access Token.
 
-- To Generate NPM Access token
+- To Generate NPM Access token.
 
-- Change the name,homepage,author in `package.json`
+- Change the name,homepage,author in `package.json`.
 
-- Create a NPM Account and create a access token< Automation > (save the token somewhere for github actions secrets)
+- Create a NPM Account and create a access token< Automation > (save the token somewhere for github actions secrets).
 
-### To Publish on NPM:
+- Create a repo on github.
 
-- Create a repo on github
+- Push to github.
 
-- Push to github
+  You can go to the actions tab inside the repo for git webhooks in action.
 
-  You can go to the actions tab inside the repo for git webhooks in action
+- Go to settings of the <i><b>Repo</b></i>.
 
-- Go to setting of the <i><b>Repo</b></i>
+- Under Security > Secrets click on Action and add a new repo secret `NPM_TOKEN`
 
-#### 4 - Under Security > Secrets click on Action and add a new repo secret `NPM_TOKEN`
+Note: To trigger publish githook we need to create a new Release and publish it. As soon as you publish it will start doing all the steps mentioned in `.github/publish.yaml`
 
 <br>
 
@@ -119,7 +119,7 @@ For Publishing using github webhooks we need NPM Automation token Access Token
 When using yalc, Add "postyalc" into package.json.
 To avoid module not found (it will not add anything
 inside the package.json file if the yalc project
-( < my-package > ) has dependencies)
+( < my-package > ) has dependencies).
 
 ```json
 ...
@@ -134,12 +134,12 @@ inside the package.json file if the yalc project
 
 To automatically install local pacakage dependencies as yalc
 does not out of the box install or run yarn/npm install after
-yalc add < my-package >
+yalc add < my-package >.
 
 When using yalc link in consumer/other project folder it will
 not touch package.json file and node_modules folder. You will have
 to import the local package installed with yalc from .yalc in the
-root_dir. And there will be no effect postyalc script
+root_dir. And there will be no effect postyalc script.
 
 <br/>
 
@@ -147,7 +147,7 @@ If you want you can put pre-commit and pre-push actions in their respective file
 
 ## <b>To Commit to git we have to follow a convention</b>
 
-Note: No need to follow this is not using husky
+Note: No need to follow this if not using husky
 
 ```
 git commit -m '<prefix>: implement commitlint'
