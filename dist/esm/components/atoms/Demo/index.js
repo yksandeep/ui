@@ -1,8 +1,18 @@
 import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
 import { Card, CardLink } from "./index.styled";
-// export const Demo: React.FC<IDemo> = ({ sampleTextProp }) => {
-//   return <div className={styles.container}>{sampleTextProp}</div>;
-// };
+/**
+ * Demo
+ *
+ * @prop string variant
+ * @prop {string} sampleTextProp
+ * @return {React.FC} Demo Component
+ *
+ * @component
+ * @example
+ * return(
+ *    <Demo sampleTextProp="Demo"/>
+ * )
+ */
 export const Demo = ({ sampleTextProp }) => {
     return (_jsxs("div", Object.assign({ style: {
             width: "100%",

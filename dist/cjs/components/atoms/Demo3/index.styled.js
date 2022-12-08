@@ -7,7 +7,6 @@ exports.CardLink = exports.Card = void 0;
 const styled_components_1 = __importDefault(require("styled-components"));
 exports.Card = styled_components_1.default.div `
   padding: 20px;
-  margin: 20px;
   border: 1px solid #ccc;
   border-radius: 4px;
 `;

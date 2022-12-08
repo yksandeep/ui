@@ -3,9 +3,19 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Demo = void 0;
 const jsx_runtime_1 = require("react/jsx-runtime");
 const index_styled_1 = require("./index.styled");
-// export const Demo: React.FC<IDemo> = ({ sampleTextProp }) => {
-//   return <div className={styles.container}>{sampleTextProp}</div>;
-// };
+/**
+ * Demo
+ *
+ * @prop string variant
+ * @prop {string} sampleTextProp
+ * @return {React.FC} Demo Component
+ *
+ * @component
+ * @example
+ * return(
+ *    <Demo sampleTextProp="Demo"/>
+ * )
+ */
 const Demo = ({ sampleTextProp }) => {
     return ((0, jsx_runtime_1.jsxs)("div", Object.assign({ style: {
             width: "100%",
