@@ -1,13 +1,28 @@
 import React from "react";
 import { Card, CardLink } from "./index.styled";
 
+/**
+ * IDemo3 Interface
+ * @interface
+ * @prop {string}  sampleTextProp
+ */
 export interface IDemo3 {
   sampleTextProp: string;
 }
 
-// export const Demo3: React.FC<IDemo3> = ({ sampleTextProp }) => {
-//   return <div className={styles.container}>{sampleTextProp}</div>;
-// };
+/**
+ * Demo3
+ *
+ * @prop string variant
+ * @prop {string} sampleTextProp
+ * @return {React.FC} Demo3 Component
+ *
+ * @component
+ * @example
+ * return(
+ *    <Demo3 sampleTextProp="Demo3"/>
+ * )
+ */
 export const Demo3: React.FC<IDemo3> = ({ sampleTextProp }) => {
   return (
     <div

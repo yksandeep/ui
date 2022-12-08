@@ -74,7 +74,7 @@
             
             <nav>
                 
-                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Interfaces</h3><ul><li><a href="ButtonProps.html">ButtonProps</a></li><li><a href="TextFieldProps.html">TextFieldProps</a></li></ul><h3>Components</h3><ul><li><a href="Button.html">Button</a></li><li><a href="TextField.html">TextField</a></li></ul></div>
+                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Interfaces</h3><ul><li><a href="IDemo.html">IDemo</a></li><li><a href="IDemo2.html">IDemo2</a></li><li><a href="IDemo3.html">IDemo3</a></li><li><a href="IDemo4.html">IDemo4</a></li><li><a href="IDemo5.html">IDemo5</a></li><li><a href="IDemo6.html">IDemo6</a></li><li><a href="IDemo7.html">IDemo7</a></li><li><a href="IDemo8.html">IDemo8</a></li><li><a href="IDemo9.html">IDemo9</a></li><li><a href="IDemo10.html">IDemo10</a></li><li><a href="IDemo11.html">IDemo11</a></li><li><a href="IDemo12.html">IDemo12</a></li><li><a href="IDemo13.html">IDemo13</a></li><li><a href="IDemo14.html">IDemo14</a></li><li><a href="ITest.html">ITest</a></li></ul><h3>Components</h3><ul><li><a href="Demo.html">Demo</a></li><li><a href="Demo2.html">Demo2</a></li><li><a href="Demo3.html">Demo3</a></li><li><a href="Demo4.html">Demo4</a></li><li><a href="Demo5.html">Demo5</a></li><li><a href="Demo6.html">Demo6</a></li><li><a href="Demo7.html">Demo7</a></li><li><a href="Demo8.html">Demo8</a></li><li><a href="Demo9.html">Demo9</a></li><li><a href="Demo10.html">Demo10</a></li><li><a href="Demo11.html">Demo11</a></li><li><a href="Demo12.html">Demo12</a></li><li><a href="Demo13.html">Demo13</a></li><li><a href="Demo14.html">Demo14</a></li><li><a href="Test.html">Test</a></li></ul></div>
                 
             </nav>
         </div>
@@ -108,45 +108,89 @@
 
 
     <section>
-        <article><h2><b>React Component Library</b></h2>
-<br/>
+        <article><h1><b>Create React component library using atomic design pattern</b></h1>
+<p><b>Create React component library using atomic design pattern for your Company with the power of <i>Typescript</i>, <i>Storybook</i> and <i>Github webhooks</i>. and document them with <i>jsDoc</i></b>. all in one place.</p>
+<p>By default everthing is exported from <code>&quot;src&quot; as const</code>. Change the index.ts file for the exports according to your convenience.</p>
+<p>This project uses yalc for testing in other local project and Husky for git commit linting. If you dont want commit liniting you can remove .husky folder and below from <code>package.json</code> file or you can configure according to your need using <code>commitlint.config.js</code></p>
+<pre class="prettyprint source lang-json"><code>
+...
+&quot;scripts&quot;:{
+  &quot;prepare&quot;: &quot;husky install&quot;
+}
+...
+
+</code></pre>
+<p><b>To start Follow the Following steps </b></p>
 <h3><b>Install yarn</b></h3>
 <h4>Install via npm</h4>
-<pre class="prettyprint source"><code>$ npm install --global yarn
+<pre class="prettyprint source"><code>npm install --global yarn
 </code></pre>
 <br/>
 <h3>Install yalc globaly</h3>
-<pre class="prettyprint source"><code>$ yarn global add yalc
+<pre class="prettyprint source"><code>yarn global add yalc
 </code></pre>
 <br/>
 <h3>Install all dependencies</h3>
-<pre class="prettyprint source"><code>$ yarn install
+<pre class="prettyprint source"><code>yarn install
 </code></pre>
 <br/>
-<p>docker is required to perform next step</p>
-<h3><b>For storybook and jsDoc documentation</b></h3>
-<pre class="prettyprint source"><code>$ docker-compose up
+<h3><b>To Add new component run the following cmd and follow the steps</b></h3>
+<pre class="prettyprint source"><code>yarn run create-component
+</code></pre>
+<br/>
+<p><b>ATOMS</b>: Atoms are the smallest possible components, such as buttons, titles, inputs, text. Atoms of our interfaces serve as the foundational building blocks of our components and can’t be broken down any further without ceasing to be functional.</p>
+<p><b>Molecules</b>: Molecules as they are named consist of two or more atoms, molecules are relatively simple groups of UI elements functioning together as a unit. Examples are A Textfield comprising of an HTML textInput, a label, and an error message or a search Box comprising of an HTML TextInput and a Button.</p>
+<p><b>Organisms</b>: Organisms are relatively complex UI components composed of groups of molecules and/or atoms and/or other organisms. These organisms form distinct sections of an interface.</p>
+<p><br/> 4</p>
+<h3><b>For running storybook</b></h3>
+<pre class="prettyprint source"><code>yarn run storybbok
 </code></pre>
 <br/>
 <h3><b>Run the below CMD to build JSDoc on save changes</b></h3>
-<pre class="prettyprint source"><code>$ yarn run watch:jsDoc
+<pre class="prettyprint source"><code>yarn run watch:jsDoc
 </code></pre>
 <br/>
-<h3><b>To test your Component in the playground</b></h3>
-<pre class="prettyprint source"><code>$ yarn run storybook
+<h2>Docker-compose(slow)</h2>
+<br/>
+<p>For building storybook and jsdoc image we are using storyDockerfile and jsdocDockerfile.</p>
+<h3><b>For storybook and jsDoc documentation</b></h3>
+<pre class="prettyprint source"><code>docker-compose up
 </code></pre>
 <br/>
-<h3><b>To Add new component in this run cmd and follow the steps</b></h3>
-<pre class="prettyprint source"><code>$ yarn run create-component
-</code></pre>
-<br/>
-#### Note for devlopment(using: <i><b>yalc</b></i>)
-<pre class="prettyprint source"><code>When using yalc, Add &quot;postyalc&quot; into package.json.
+<h2>Publishing</h2>
+<p>For Publishing using github webhooks we need NPM Automation token Access Token</p>
+<ul>
+<li>
+<p>To Generate NPM Access token</p>
+</li>
+<li>
+<p>Change the name,homepage,author in <code>package.json</code></p>
+</li>
+<li>
+<p>Create a NPM Account and create a access token&lt; Automation &gt; (save the token somewhere for github actions secrets)</p>
+</li>
+</ul>
+<h3>To Publish on NPM:</h3>
+<ul>
+<li>
+<p>Create a repo on github</p>
+</li>
+<li>
+<p>Push to github</p>
+<p>You can go to the actions tab inside the repo for git webhooks in action</p>
+</li>
+<li>
+<p>Go to setting of the <i><b>Repo</b></i></p>
+</li>
+</ul>
+<h4>4 - Under Security &gt; Secrets click on Action and add a new repo secret <code>NPM_TOKEN</code></h4>
+<br>
+<h2>Note for devlopment(using: <i><b>yalc</b></i>)</h2>
+<p>When using yalc, Add &quot;postyalc&quot; into package.json.
 To avoid module not found (it will not add anything
 inside the package.json file if the yalc project
-(&lt;my-package>) has dependencies)
-
-...
+( &lt; my-package &gt; ) has dependencies)</p>
+<pre class="prettyprint source lang-json"><code>...
   &quot;scripts&quot;:{
     ...
     &quot;postyalc&quot;: &quot;yarn&quot;
@@ -154,18 +198,18 @@ inside the package.json file if the yalc project
   }
 ...
 
-To automatically install local pacakage dependencies as yalc
+</code></pre>
+<p>To automatically install local pacakage dependencies as yalc
 does not out of the box install or run yarn/npm install after
-yalc add &lt;my-package>
-
-When using yalc link in consumer/other project folder it will
+yalc add &lt; my-package &gt;</p>
+<p>When using yalc link in consumer/other project folder it will
 not touch package.json file and node_modules folder. You will have
 to import the local package installed with yalc from .yalc in the
-root_dir. And there will be no effect postyalc script
-
-</code></pre>
+root_dir. And there will be no effect postyalc script</p>
 <br/>
-<h3><b>To Commit to git we have to follow a convention</b></h3>
+<p>If you want you can put pre-commit and pre-push actions in their respective files to trigger.</p>
+<h2><b>To Commit to git we have to follow a convention</b></h2>
+<p>Note: No need to follow this is not using husky</p>
 <pre class="prettyprint source"><code>git commit -m '&lt;prefix>: implement commitlint'
 
 Prefix:[
@@ -185,6 +229,7 @@ Prefix:[
         &quot;changeset&quot;,
       ],
 
+To know more about prefix checkout commitlint.config.js
 </code></pre></article>
     </section>
 

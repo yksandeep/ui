@@ -1,13 +1,28 @@
 import React from "react";
 import { Card, CardLink } from "./index.styled";
 
+/**
+ * IBaseTemplate Interface
+ * @interface
+ * @prop {string}  sampleTextProp
+ */
 export interface IBaseTemplate {
   sampleTextProp: string;
 }
 
-// export const BaseTemplate: React.FC<IBaseTemplate> = ({ sampleTextProp }) => {
-//   return <div className={styles.container}>{sampleTextProp}</div>;
-// };
+/**
+ * BaseTemplate
+ *
+ * @prop string variant
+ * @prop {string} sampleTextProp
+ * @return {React.FC} BaseTemplate Component
+ *
+ * @component
+ * @example
+ * return(
+ *    <BaseTemplate sampleTextProp="BaseTemplate"/>
+ * )
+ */
 export const BaseTemplate: React.FC<IBaseTemplate> = ({ sampleTextProp }) => {
   return (
     <div

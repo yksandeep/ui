@@ -13,17 +13,37 @@ services:
     networks:
       - app-network
 
-  reactlibjsdoc:
+  # reactlibjsdoc:
+  #   build:
+  #     context: ./
+  #     dockerfile: jsdocDockerfile
+  #   container_name: reactlibjsdoc
+  #   volumes:
+  #     - ./docs:/usr/share/nginx/html
+  #   ports:
+  #     - "8080:80"
+  #   networks:
+  #     - app-network
+
+  test:
     build:
       context: ./
-      dockerfile: jsdocDockerfile
-    container_name: reactlibjsdoc
+      dockerfile: jsdocDevDockerfile
+    command: >
+      /bin/sh -c "nginx && yarn run build:doc:watch"
+    tty: true
     volumes:
+      - ./src:/usr/share/nginx/src
+      - ./.jsdocbuild:/usr/share/nginx/.jsdocbuild
+      - ./package.json:/usr/share/nginx/package.json
+      - ./yarn.lock:/usr/share/nginx/yarn.lock
+      - ./tsconfig.json:/usr/share/nginx/tsconfig.json
+      - ./jsdoc.json:/usr/share/nginx/jsdoc.json
       - ./docs:/usr/share/nginx/html
+      - ./.jsDocbuild/nginx_conf/:/etc/nginx/conf.d/
+
     ports:
       - "8080:80"
-    networks:
-      - app-network
 
 networks:
   app-network:

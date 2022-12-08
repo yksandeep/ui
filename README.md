@@ -1,6 +1,22 @@
-## <b>React Component Library</b>
+# <b>Create React component library using atomic design pattern</b>
 
-<br/>
+<b>Create React component library using atomic design pattern for your Company with the power of <i>Typescript</i>, <i>Storybook</i> and <i>Github webhooks</i>. and document them with <i>jsDoc</i></b>. all in one place.
+
+By default everthing is exported from `"src" as const`. Change the index.ts file for the exports according to your convenience.
+
+This project uses yalc for testing in other local project and Husky for git commit linting. If you dont want commit liniting you can remove .husky folder and below from `package.json` file or you can configure according to your need using `commitlint.config.js`
+
+```json
+
+...
+"scripts":{
+  "prepare": "husky install"
+}
+...
+
+```
+
+<b>To start Follow the Following steps </b>
 
 ### <b>Install yarn</b>
 
@@ -28,12 +44,26 @@ yarn install
 
 <br/>
 
-docker is required to perform next step
-
-### <b>For storybook and jsDoc documentation</b>
+### <b>To Add new component run the following cmd and follow the steps</b>
 
 ```
-docker-compose up
+yarn run create-component
+```
+
+<br/>
+
+<b>ATOMS</b>: Atoms are the smallest possible components, such as buttons, titles, inputs, text. Atoms of our interfaces serve as the foundational building blocks of our components and can’t be broken down any further without ceasing to be functional.
+
+<b>Molecules</b>: Molecules as they are named consist of two or more atoms, molecules are relatively simple groups of UI elements functioning together as a unit. Examples are A Textfield comprising of an HTML textInput, a label, and an error message or a search Box comprising of an HTML TextInput and a Button.
+
+<b>Organisms</b>: Organisms are relatively complex UI components composed of groups of molecules and/or atoms and/or other organisms. These organisms form distinct sections of an interface.
+
+<br/> 4
+
+### <b>For running storybook</b>
+
+```
+yarn run storybbok
 ```
 
 <br/>
@@ -46,23 +76,45 @@ yarn run watch:jsDoc
 
 <br/>
 
-### <b>To test your Component in the playground</b>
+## Docker-compose(slow)
+
+<br/>
+
+For building storybook and jsdoc image we are using storyDockerfile and jsdocDockerfile.
+
+### <b>For storybook and jsDoc documentation</b>
 
 ```
-yarn run storybook
+docker-compose up
 ```
 
 <br/>
 
-### <b>To Add new component in this run cmd and follow the steps</b>
+## Publishing
 
-```
-yarn run create-component
-```
+For Publishing using github webhooks we need NPM Automation token Access Token
 
-<br/>
+- To Generate NPM Access token
 
-#### Note for devlopment(using: <i><b>yalc</b></i>)
+- Change the name,homepage,author in `package.json`
+
+- Create a NPM Account and create a access token< Automation > (save the token somewhere for github actions secrets)
+
+### To Publish on NPM:
+
+- Create a repo on github
+
+- Push to github
+
+  You can go to the actions tab inside the repo for git webhooks in action
+
+- Go to setting of the <i><b>Repo</b></i>
+
+#### 4 - Under Security > Secrets click on Action and add a new repo secret `NPM_TOKEN`
+
+<br>
+
+## Note for devlopment(using: <i><b>yalc</b></i>)
 
 When using yalc, Add "postyalc" into package.json.
 To avoid module not found (it will not add anything
@@ -91,11 +143,11 @@ root_dir. And there will be no effect postyalc script
 
 <br/>
 
-<b>Husky is used for git commitlint</b>
-
 If you want you can put pre-commit and pre-push actions in their respective files to trigger.
 
-### <b>To Commit to git we have to follow a convention</b>
+## <b>To Commit to git we have to follow a convention</b>
+
+Note: No need to follow this is not using husky
 
 ```
 git commit -m '<prefix>: implement commitlint'
@@ -119,5 +171,3 @@ Prefix:[
 
 To know more about prefix checkout commitlint.config.js
 ```
-
-WORKING ON README file

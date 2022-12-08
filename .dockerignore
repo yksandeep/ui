@@ -4,3 +4,4 @@ storyDockerfile
 jsdocDockerfile
 jsdocDevDockerfile
 .jsDocbuild
+.parcel-cache

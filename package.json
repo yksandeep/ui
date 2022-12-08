@@ -29,7 +29,7 @@
     "build-storybook": "build-storybook",
     "publish:yalc": "yarn run build && yalc publish --push --no-scripts --yarn",
     "build:doc": "./node_modules/.bin/jsdoc --verbose -c ./jsdoc.json",
-    "build:doc:watch": "./node_modules/.bin/onchange \"src/**/*.t(s|sx)\" -- yarn run build:doc",
+    "build:doc:watch": "node ./.jsdocbuild/doc_watcher/index.js",
     "create-component": "cd .create-component && yarn && yarn start",
     "prepare": "husky install"
   },

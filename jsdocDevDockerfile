@@ -1,38 +1,58 @@
-FROM node:latest
-RUN apt-get update
-RUN set -xe; \
-	# # Node.js repo
-	# curl -fsSL https://deb.nodesource.com/gpgkey/nodesource.gpg.key | apt-key add -; \
-	# echo "deb https://deb.nodesource.com/node_${NODE_VERSION} jessie main" | sudo tee /etc/apt/sources.list.d/nodesource.list; \
-	# echo "deb-src https://deb.nodesource.com/node_${NODE_VERSION} jessie main" | sudo tee -a /etc/apt/sources.list.d/nodesource.list; \
-	# yarn repo
-	curl -fsSL https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -; \
-	echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list; \
-	apt-get update >/dev/null; \
-	apt-get -y --no-install-recommends install >/dev/null \
-		yarn \
-	;\
-	apt-get clean; rm -rf /var/lib/apt/lists/*;
+# FROM node:latest
 
-# Set user and group
-ARG user=appuser
-ARG group=appuser
-ARG uid=1002
-ARG gid=1002
-RUN groupadd -g ${gid} ${group}
-# <--- the '-m' create a user home directory
-RUN useradd -u ${uid} -g ${group} -s /bin/sh -m ${user} 
-RUN mkdir /home/${user}/react-lib
-COPY . /home/${user}/react-lib/
-RUN chown -R ${user}: /home/${user}/react-lib/
+# RUN apt-get update
+# RUN apt-get install -y nginx
+# RUN apt-get install -y openrc 
+# RUN touch /run/openrc/softlevel
+# RUN rc-service nginx restart
+# RUN mkdir -p  /var/www/html
 
-# Switch to user
-USER ${uid}:${gid}
+# ARG user=appuser
+# ARG group=appuser
+# ARG uid=1002
+# ARG gid=1002
+# COPY . /var/www/html/
+# COPY ./.jsdocbuild/nginx_conf/nginx.conf /etc/nginx/http.d/default.conf
+# RUN rc-service nginx restart
 
-WORKDIR /home/${user}/react-lib/
+# RUN set -xe; \
+# 	curl -fsSL https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -; \
+# 	echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list; \
+# 	apt-get update >/dev/null; \
+# 	apt-get -y --no-install-recommends install >/dev/null \
+# 		yarn \
+# 	;\
+# 	apt-get clean; rm -rf /var/lib/apt/lists/*;
+
+# RUN yarn global add parcel 
+
+# WORKDIR /var/www/html/
+
+# RUN yarn install
+# CMD [ "yarn","run","build:doc:watch" ]
+
+
+FROM nginx:alpine
+
+RUN apk update
+
+RUN apk add --update nodejs npm
+RUN apk --no-cache add g++ gcc libgcc libstdc++ linux-headers make python3 git fts-dev
+
+RUN npm install --global yarn
+
+RUN yarn global add parcel
+
+## add permissions
+RUN chown -R nginx:nginx /usr/share/nginx/html && chmod -R 755 /usr/share/nginx/html && \
+        chown -R nginx:nginx /var/cache/nginx && \
+        chown -R nginx:nginx /var/log/nginx && \
+        chown -R nginx:nginx /etc/nginx/conf.d
+RUN touch /var/run/nginx.pid && \
+        chown -R nginx:nginx /var/run/nginx.pid
+
+COPY ./ /usr/share/nginx/
+
+WORKDIR /usr/share/nginx/
+
 RUN yarn install
-RUN yarn global add parcel 
-CMD [ "yarn","run","build:doc:watch"]
-
-
-
