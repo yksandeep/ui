@@ -25,9 +25,6 @@ jobs:
       - name: Build
         run: yarn build
 
-      - name: Version patch
-        run: npm version patch
-
       - name: Publish
         run: npm publish --access public
         env:
