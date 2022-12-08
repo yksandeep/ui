@@ -1,6 +1,6 @@
 {
   "name": "@kumar08/react-lib",
-  "version": "1.0.1",
+  "version": "1.0.0",
   "description": "",
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
@@ -23,12 +23,13 @@
   "scripts": {
     "test:lib": "echo \"Error: no test specified\" && exit 1",
     "build": "rm -rf dist && yarn run build:esm && yarn run build:cjs",
+    "build:precommit": "rm -rf testBuild && tsc --outDir testBuild/esm && tsc --module CommonJs --outDir testBuild/cjs && rm -rf testBuild",
     "build:esm": "tsc",
     "build:cjs": "tsc --module CommonJs --outDir dist/cjs",
     "storybook": "start-storybook -p 6006",
     "build-storybook": "build-storybook",
     "publish:yalc": "yarn run build && yalc publish --push --no-scripts --yarn",
-    "build:doc": "./node_modules/.bin/jsdoc --verbose -c ./jsdoc.json",
+    "build:doc": "rm -rf docs && ./node_modules/.bin/jsdoc --verbose -c ./jsdoc.json",
     "build:doc:watch": "node ./.jsdocbuild/doc_watcher/index.js",
     "create-component": "cd .create-component && yarn && yarn start",
     "prepare": "husky install"

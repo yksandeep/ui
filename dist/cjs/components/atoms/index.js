@@ -15,18 +15,4 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 __exportStar(require("./Demo"), exports);
-__exportStar(require("./Demo10"), exports);
-__exportStar(require("./Demo11"), exports);
-__exportStar(require("./Demo2"), exports);
-__exportStar(require("./Demo3"), exports);
-__exportStar(require("./Demo4"), exports);
-__exportStar(require("./Demo5"), exports);
-__exportStar(require("./Demo6"), exports);
-__exportStar(require("./Demo7"), exports);
-__exportStar(require("./Demo8"), exports);
-__exportStar(require("./Demo9"), exports);
-__exportStar(require("./Demo12"), exports);
-__exportStar(require("./Demo13"), exports);
-__exportStar(require("./Demo14"), exports);
-__exportStar(require("./Test"), exports);
 //# sourceMappingURL=index.js.map
