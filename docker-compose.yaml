@@ -4,7 +4,7 @@ services:
   reactlibstorybook:
     build:
       context: ./
-      dockerfile: storyDockerfile
+      dockerfile: storyDevDockerfile
     container_name: reactlibstorybook
     volumes:
       - .:/home/appuser/react-lib
@@ -13,19 +13,25 @@ services:
     networks:
       - app-network
 
-  # reactlibjsdoc:
-  #   build:
-  #     context: ./
-  #     dockerfile: jsdocDockerfile
-  #   container_name: reactlibjsdoc
-  #   volumes:
-  #     - ./docs:/usr/share/nginx/html
-  #   ports:
-  #     - "8080:80"
-  #   networks:
-  #     - app-network
+  reactlibprodstorybook:
+    build:
+      context: ./
+      dockerfile: storyProdDockerfile
+    ports:
+      - "8082:80"
+    networks:
+      - app-network
 
-  test:
+  reactlibprodjsdoc:
+    build:
+      context: ./
+      dockerfile: jsdocProdDockerfile
+    ports:
+      - "8081:80"
+    networks:
+      - app-network
+
+  reactlibjsdoc:
     build:
       context: ./
       dockerfile: jsdocDevDockerfile
@@ -40,7 +46,7 @@ services:
       - ./tsconfig.json:/usr/share/nginx/tsconfig.json
       - ./jsdoc.json:/usr/share/nginx/jsdoc.json
       - ./docs:/usr/share/nginx/html
-      - ./.jsDocbuild/nginx_conf/:/etc/nginx/conf.d/
+      - ./.jsdocbuild/nginx_conf/:/etc/nginx/conf.d/
 
     ports:
       - "8080:80"

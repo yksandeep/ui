@@ -1,0 +1,88 @@
+pipeline{
+    agent any
+    environment {
+        docdockerImage = ''
+        storydockerImage = ''
+        //once you sign up for Docker hub, use that user_id here
+        registry = "yksandeep"
+        DOCNAME = "react-lib-doc"
+        STORYNAME = "react-lib-story"
+        VERSION = "${env.BUILD_ID}"
+        DOCIMAGE = "${DOCNAME}:${VERSION}"
+        STORYIMAGE = "${STORYNAME}:${VERSION}"
+
+        //- update your credentials ID after creating credentials for connecting to Docker Hub
+        registryCredential = 'docker_id'
+    }
+    stages{
+        stage('Cloning git'){
+            steps{
+                checkout([
+                    $class: 'GitSCM',
+                    branches: [[name: '*/main']],
+                    extensions: [],
+                    userRemoteConfigs: [
+                        [
+                            credentialsId: 'github_id',
+                            url: 'https://github.com/yksandeep/react-lib.git'
+                        ]
+                    ]
+                ])
+            }
+        }
+        stage("Install Dependencies"){
+          steps{
+            script{
+              sh "yarn"
+            }
+          }
+        }
+        stage("Building jsDoc"){
+          steps{
+            script{
+              sh "yarn buid:doc"
+            }
+          }
+        }
+        stage("Building Storybook"){
+          steps{
+            script{
+              sh "yarn build-storybook"
+            }
+          }
+        }
+        stage("Building jsdocProdDockerfile"){
+            steps{
+                script{
+                    docdockerImage = docker.build("${registry}/${DOCIMAGE}","-f jsdocProdDockerfile .")
+                }
+            }
+        }
+        stage("Pushing jsdocProdDockerfile"){
+            steps{
+                script {
+                    docker.withRegistry( '', registryCredential ) {
+                        docdockerImage.push()
+                    }
+                }
+            }
+        }
+        stage("Building storyProdDockerfile"){
+            steps{
+                script{
+                    storydockerImage = docker.build("${registry}/${STORYIMAGE}","-f storyProdDockerfile .")
+                }
+            }
+        }
+        stage("Pushing storyProdDockerfile"){
+            steps{
+                script {
+                    docker.withRegistry( '', registryCredential ) {
+                        storydockerImage.push()
+                    }
+                }
+            }
+        }
+        
+    }
+}

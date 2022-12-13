@@ -1,24 +1,20 @@
 FROM nginx:alpine
 
-RUN apk update
-
-RUN apk add --update nodejs npm
-RUN apk --no-cache add g++ gcc libgcc libstdc++ linux-headers make python3 git fts-dev
-
-RUN npm install --global yarn
-
-RUN yarn global add parcel
 
 ## add permissions
 RUN chown -R nginx:nginx /usr/share/nginx/html && chmod -R 755 /usr/share/nginx/html && \
         chown -R nginx:nginx /var/cache/nginx && \
         chown -R nginx:nginx /var/log/nginx && \
         chown -R nginx:nginx /etc/nginx/conf.d
+
 RUN touch /var/run/nginx.pid && \
         chown -R nginx:nginx /var/run/nginx.pid
 
-COPY ./ /usr/share/nginx/
+
+COPY ./docs /usr/share/nginx/html
+
+COPY ./.jsdocbuild/nginx_conf/ /etc/nginx/conf.d/
 
 WORKDIR /usr/share/nginx/
 
-RUN yarn install
+
