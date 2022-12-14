@@ -1,5 +1,6 @@
 pipeline{
-    agent any
+    agent { docker { image 'node:latest' } }
+    // tools {nodejs 'node-18.12.0'}
     environment {
         docdockerImage = ''
         storydockerImage = ''
@@ -10,6 +11,7 @@ pipeline{
         VERSION = "${env.BUILD_ID}"
         DOCIMAGE = "${DOCNAME}:${VERSION}"
         STORYIMAGE = "${STORYNAME}:${VERSION}"
+        HOME = '.'
 
         //- update your credentials ID after creating credentials for connecting to Docker Hub
         registryCredential = 'docker_id'
@@ -30,17 +32,18 @@ pipeline{
                 ])
             }
         }
+       
         stage("Install Dependencies"){
           steps{
             script{
-              sh "yarn"
+              sh "yarn install"
             }
           }
         }
         stage("Building jsDoc"){
           steps{
             script{
-              sh "yarn buid:doc"
+              sh "yarn build:doc"
             }
           }
         }
