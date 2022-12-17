@@ -1,4 +1,4 @@
-<!--  Trying to obtain the Pipeline script contents directly from the SCM without performing a full checkout -->
+<!--  Trying again to obtain the Pipeline script contents directly from the SCM without performing a full checkout -->
 
 # <b>Create React component library using atomic design pattern</b>
 
