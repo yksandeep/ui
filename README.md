@@ -1,3 +1,5 @@
+<!--  Trying to obtain the Pipeline script contents directly from the SCM without performing a full checkout -->
+
 # <b>Create React component library using atomic design pattern</b>
 
 <b>Create React component library using atomic design pattern for your Company with the power of <i>Typescript</i>, <i>Storybook</i> and <i>Github webhooks</i>. and document them with <i>jsDoc</i></b>. all in one place.
