@@ -8,17 +8,19 @@ pipeline{
         registry = "yksandeep"
         DOCNAME = "react-lib-doc"
         STORYNAME = "react-lib-story"
-        VERSION = "${env.BUILD_ID}"
+        VERSION = "1.0.${env.BUILD_ID}"
         DOCIMAGE = "${DOCNAME}:${VERSION}"
         STORYIMAGE = "${STORYNAME}:${VERSION}"
-        HOME = '.'
-
+        userAborted  = false
+        HOME = "."
         //- update your credentials ID after creating credentials for connecting to Docker Hub
         registryCredential = 'docker_id'
     }
     stages{
-        stage('Cloning git'){
+        stage("Cloning"){
             steps{
+                // CLONE
+                echo "Cloning from git..."
                 checkout([
                     $class: 'GitSCM',
                     branches: [[name: '*/main']],
@@ -32,60 +34,77 @@ pipeline{
                 ])
             }
         }
-       
-        stage("Install Dependencies"){
-          steps{
-            script{
-              sh "yarn install"
-            }
-          }
-        }
-        stage("Building jsDoc"){
-          steps{
-            script{
-              sh "yarn build:doc"
-            }
-          }
-        }
-        stage("Building Storybook"){
-          steps{
-            script{
-              sh "yarn build-storybook"
-            }
-          }
-        }
-        stage("Building jsdocProdDockerfile"){
+        stage("Testing"){
             steps{
+                // TESTING
+                echo "Testing..."
+            }
+        }
+        stage("Building for stageing"){
+            steps{
+                //  BUILDING
+                echo "Building Image ${DOCNAME}:${VERSION} and ${STORYNAME}:${VERSION} for staging ..."
+                sh "yarn install"
+                sh "yarn build && yarn build:doc && yarn build-storybook"
                 script{
                     docdockerImage = docker.build("${registry}/${DOCIMAGE}","-f jsdocProdDockerfile .")
-                }
-            }
-        }
-        stage("Pushing jsdocProdDockerfile"){
-            steps{
-                script {
-                    docker.withRegistry( '', registryCredential ) {
-                        docdockerImage.push()
-                    }
-                }
-            }
-        }
-        stage("Building storyProdDockerfile"){
-            steps{
-                script{
                     storydockerImage = docker.build("${registry}/${STORYIMAGE}","-f storyProdDockerfile .")
                 }
             }
         }
-        stage("Pushing storyProdDockerfile"){
+        stage("Pushing in staging"){
             steps{
+                //  PUSHING
+                echo "Pushing Image ${DOCNAME}:${VERSION} and ${STORYNAME}:${VERSION} in staging..."
                 script {
                     docker.withRegistry( '', registryCredential ) {
+                        docdockerImage.push()
                         storydockerImage.push()
                     }
                 }
             }
         }
-        
+        stage("Building for prod"){
+            steps{
+                echo "Docker build ${DOCNAME}:latest and ${STORYNAME}:latest ..."
+                //  BUILDING
+                script {
+                    docdockerImage = docker.build("${registry}/${DOCNAME}:latest","-f jsdocProdDockerfile .")
+                    storydockerImage = docker.build("${registry}/${STORYNAME}:latest","-f storyProdDockerfile .")
+                }
+            }
+        }
+        stage("Waiting for approval to push in Prod"){
+            steps{
+                emailext (body: "Please go to http://localhost:8081/job/${env.JOB_NAME} input to approve deployment to production",
+                mimeType: "text/html",
+                subject: "Aproval to push to the prodcution",
+                from: "pkytsky@gmail.com",
+                to: "yksandeep08+jenkins@gmail.com",
+                recipientProviders: [
+                    [$class: 'DevelopersRecipientProvider'],
+                    [$class: 'CulpritsRecipientProvider']
+                ])
+                input(
+                    message:"Should we continue ?",
+                    ok:"Yes we should" 
+                )
+            }
+        }
+        stage("Pushing in prod"){
+            // PUSHING
+            steps{
+                script {
+                    docker.withRegistry( '', registryCredential ) {
+                        docdockerImage.push()
+                        storydockerImage.push()
+                    }
+                }
+            }
+        }
     }
 }
+
+
+
+
