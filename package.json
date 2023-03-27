@@ -3,18 +3,8 @@
   "version": "1.0.3",
   "description": "",
   "main": "dist/cjs/index.js",
-  "module": "dist/esm/index.js",
+  "module": "dist/cjs/index.js",
   "homepage": "https://github.com/yksandeep/react-lib",
-  "size-limit": [
-    {
-      "path": "dist/cjs/index.js",
-      "limit": "10 KB"
-    },
-    {
-      "path": "dist/esm/index.js",
-      "limit": "10 KB"
-    }
-  ],
   "engines": {
     "node": ">=8.12.0",
     "yarn": ">=1.22.19",
@@ -22,13 +12,15 @@
   },
   "scripts": {
     "test:lib": "echo \"Error: no test specified\" && exit 1",
-    "build": "rm -rf dist && yarn run build:esm && yarn run build:cjs",
+    "build": "yarn run build:cjs && tsc-alias -p tsconfig.json --debug",
     "build:precommit": "rm -rf testBuild && tsc --outDir testBuild/esm && tsc --module CommonJs --outDir testBuild/cjs && rm -rf testBuild",
-    "build:esm": "tsc",
-    "build:cjs": "tsc --module CommonJs --outDir dist/cjs",
+    "build:test": "rm -rf testBuild && tsc --outDir testBuild/esm && tsc --module CommonJs --outDir testBuild/cjs",
+    "build:esm": "rm -rf ./dist/esm &&  tsc --outDir dist/esm",
+    "build:cjs": "rm -rf ./dist/cjs &&  tsc --outDir dist/cjs --module CommonJs",
     "storybook": "start-storybook -p 6006",
     "build-storybook": "build-storybook",
-    "publish:yalc": "yarn run build && yalc publish --push --no-scripts --yarn",
+    "yalc:publish": "yarn run build && yalc publish --push --no-scripts --yarn",
+    "yalc:watch": "nodemon -e js,ts --ignore 'dist/*/**' --exec \"yarn run build && yalc push --changed\"",
     "build:doc": "rm -rf docs && ./node_modules/.bin/jsdoc --verbose -c ./jsdoc.json",
     "build:doc:watch": "node ./.jsdocbuild/doc_watcher/index.js",
     "create-component": "cd .create-component && yarn && yarn start",
@@ -63,12 +55,14 @@
     "husky": "^8.0.2",
     "jsdoc": "3.6.10",
     "jsdoc-babel": "^0.5.0",
+    "nodemon": "^2.0.22",
     "onchange": "^7.1.0",
     "parcel": "^2.8.0",
     "parcel-resolver-ignore": "^2.1.3",
     "parcel-resolver-tspaths": "^0.0.9",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "tsc-alias": "^1.8.4",
     "tsconfig-paths-webpack-plugin": "^4.0.0",
     "typescript": "^4.9.3",
     "typescript-plugin-css-modules": "^4.1.0"

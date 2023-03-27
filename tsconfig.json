@@ -4,16 +4,17 @@
     "declaration": true,
     "esModuleInterop": true,
     "jsx": "react-jsx",
-    "lib": ["ES5", "ES2015", "ES2016", "DOM", "ESNext"],
+    "lib": ["es2020", "dom"],
     "types": ["node"],
-    "module": "es2015",
+    "module": "esnext",
     "moduleResolution": "node",
     "noImplicitAny": false,
     "noUnusedLocals": true,
-    "outDir": "dist/esm",
+    "outDir": "dist/cjs",
     "sourceMap": true,
     "strict": true,
-    "target": "ES6",
+    "target": "ES2016",
+    "skipLibCheck": true,
     "plugins": [{ "name": "typescript-plugin-css-modules" }],
     "baseUrl": ".",
     "paths": {
@@ -34,5 +35,9 @@
     "src/**/*.stories.tsx",
     "src/**/*.stories.ts",
     "frontend"
-  ]
+  ],
+  "tsc-alias": {
+    "verbose": true,
+    "resolveFullPaths": true
+  }
 }
