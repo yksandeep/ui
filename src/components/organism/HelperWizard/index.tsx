@@ -1,5 +1,10 @@
+import { commonStyles } from "@/shared/utils";
 import React from "react";
-import { InstructionsModal } from "./index.styled";
+import {
+  InstructionsModal,
+  StyledBackButton,
+  StyledNextButton,
+} from "./index.styled";
 
 /**
  * IHelperWizard Interface
@@ -13,6 +18,10 @@ export interface IHelperWizard extends React.HTMLAttributes<HTMLDivElement> {
   btnStyle?: React.CSSProperties;
   btnBgcolorhover?: string;
   btntxtcolorhover?: string;
+  customButton?: (id: string, children: string) => React.ReactNode;
+  customHeader?: (className: string) => React.ReactNode;
+  customBodyText?: (className: string) => React.ReactNode;
+  customCloseButton?: (id: string) => React.ReactNode;
 }
 
 /**
@@ -28,6 +37,10 @@ export interface IHelperWizard extends React.HTMLAttributes<HTMLDivElement> {
  */
 export const HelperWizard: React.FC<IHelperWizard> = ({
   helperRef,
+  customButton,
+  customHeader,
+  customBodyText,
+  customCloseButton,
   ...props
 }) => {
   return (
@@ -40,51 +53,73 @@ export const HelperWizard: React.FC<IHelperWizard> = ({
       <InstructionsModal
         fontColor={props.fontColor}
         backgroundColor={props.backgroundColor}
-        btnBgcolorhover={props.btnBgcolorhover}
-        btntxtcolorhover={props.btntxtcolorhover}
         ref={helperRef}
       >
         <div className="triangle-up hide"></div>
         <div className="triangle-down hide"></div>
         <div className="triangle-right hide"></div>
         <div className="triangle-left hide"></div>
-        <div>
-          <button
-            id="closeInstWindow"
-            type="button"
-            data-bs-dismiss="modal"
-            aria-label="Close"
-            style={{
-              color: "#999",
-              backgroundColor: "transparent",
-              border: "none",
-              marginBottom: "0",
-              position: "absolute",
-              right: "14px",
-              cursor: "pointer",
-              top: "10px",
-            }}
-          >
-            X
-          </button>
-
-          <p
-            className="instructionText"
-            style={{
-              marginBottom: 0,
-              paddingLeft: "1rem",
-              paddingRight: "1rem",
-              paddingBottom: "1.5rem",
-              fontSize: "18px",
-              maxWidth: "100%",
-              paddingTop: "1rem",
-            }}
-          ></p>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            gap: "12px",
+            padding: "12px",
+          }}
+        >
           <div
             style={{
-              width: "95%",
-              margin: "auto",
+              display: "flex",
+              maxWidth: "100%",
+              justifyContent: "end",
+            }}
+          >
+            {customCloseButton ? (
+              customCloseButton("closeInstWindow")
+            ) : (
+              <button
+                id="closeInstWindow"
+                type="button"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+                style={{
+                  color: props.fontColor || commonStyles.textBody,
+                  backgroundColor: "transparent",
+                  border: "none",
+                  cursor: "pointer",
+                  fontSize: commonStyles.textBodyFont,
+                }}
+              >
+                x
+              </button>
+            )}
+          </div>
+          <div
+            style={{
+              maxWidth: "100%",
+            }}
+          >
+            {customHeader ? (
+              <>{customHeader("instructionText")}</>
+            ) : (
+              <p
+                className="instructionText"
+                style={{
+                  margin: 0,
+                  fontSize: commonStyles.textHeadingFont,
+                  maxWidth: "100%",
+                  color: props.fontColor || commonStyles.textHeading,
+                }}
+              ></p>
+            )}
+          </div>
+          <div
+            style={{
+              width: "100%",
               background: props.backgroundColor,
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
             }}
           >
             <img
@@ -93,25 +128,34 @@ export const HelperWizard: React.FC<IHelperWizard> = ({
               alt=""
               style={{
                 maxWidth: "100%",
+                maxHeight: "250px",
                 borderRadius: "8px",
-                marginBottom: "1rem",
               }}
             />
           </div>
-          <div style={{ width: "95%", margin: "auto" }}>
-            <p
-              className="instructionTextExample"
-              style={{
-                marginBottom: "0",
-                paddingLeft: "0.4rem",
-                paddingBottom: "0",
-                fontSize: "14px",
-                color: "#999",
-                maxWidth: "100%",
-              }}
-            ></p>
+          <div
+            style={{
+              maxWidth: "100%",
+            }}
+          >
+            {customBodyText ? (
+              <>{customBodyText("instructionTextExample")}</>
+            ) : (
+              <p
+                className="instructionTextExample"
+                style={{
+                  fontSize: commonStyles.textBodyFont,
+                  color: props.fontColor || commonStyles.textBody,
+                  maxWidth: "100%",
+                }}
+              ></p>
+            )}
           </div>
-          <div style={{ width: "95%", margin: "auto" }}>
+          <div
+            style={{
+              width: "100%",
+            }}
+          >
             <audio
               className="instructionAudioExample"
               src=""
@@ -124,49 +168,64 @@ export const HelperWizard: React.FC<IHelperWizard> = ({
             style={{
               display: "flex",
               justifyContent: " space-between",
-              padding: "5px",
-              marginTop: "10px",
+              alignItems: "center",
+              maxWidth: "100%",
             }}
           >
-            <button
-              id="backStep"
-              style={{
-                padding: "12px 15px",
-                alignSelf: "center",
-                textAlign: "right",
-                fontSize: "14px",
-                cursor: "pointer",
-              }}
-            >
-              Back
-            </button>
+            {customButton ? (
+              <>{customButton("backStep", "Back")}</>
+            ) : (
+              <StyledBackButton
+                id="backStep"
+                fontColor={props.fontColor}
+                style={{
+                  padding: "8px 12px",
+                  alignSelf: "center",
+                  textAlign: "right",
+                  fontSize: commonStyles.textBody,
+                  cursor: "pointer",
+                  ...props.btnStyle,
+                }}
+              >
+                Back
+              </StyledBackButton>
+            )}
             <p
               className=""
               style={{
-                padding: "12px 15px",
+                padding: "8px 12px",
                 alignSelf: "center",
                 marginLeft: "auto",
                 textAlign: "right",
-                fontSize: "14px",
+                fontSize: commonStyles.textBodyFont,
                 cursor: "pointer",
+                color: props.fontColor || commonStyles.textBody_50,
               }}
             >
               <span className="currentStep"></span>/
               <span className="totalSteps"></span>
             </p>
-            <button
-              id="nextStep"
-              className=""
-              style={{
-                padding: "12px 15px",
-                alignSelf: "center",
-                textAlign: "right",
-                fontSize: "14px",
-                cursor: "pointer",
-              }}
-            >
-              Next
-            </button>
+            {customButton ? (
+              <>{customButton("nextStep", "Next")}</>
+            ) : (
+              <StyledNextButton
+                id="nextStep"
+                className=""
+                fontColor={props.fontColor}
+                btnBgcolorhover={props.btnBgcolorhover}
+                btntxtcolorhover={props.btntxtcolorhover}
+                style={{
+                  padding: "8px 12px",
+                  alignSelf: "center",
+                  textAlign: "right",
+                  fontSize: commonStyles.textBodyFont,
+                  cursor: "pointer",
+                  ...props.btnStyle,
+                }}
+              >
+                Next
+              </StyledNextButton>
+            )}
           </div>
         </div>
       </InstructionsModal>

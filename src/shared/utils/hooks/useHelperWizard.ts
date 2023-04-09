@@ -45,6 +45,14 @@ export const useHelperWizard = ({ ...props }: IuseHelperWizard) => {
   const closed = useRef(false);
   const takeInput = useRef(false);
 
+  const afterResize = () => {
+    if (instructions.current) {
+      placeWizard({
+        nextToId: instructions.current.instruction[step.current].elementId,
+      });
+    }
+  };
+
   const prepareWizard = useCallback(
     ({ example, forElement, typeWriterSpeed = 100 }: IPrepareWizard) => {
       const wizardBody: HTMLParagraphElement | null = document.querySelector(
@@ -113,6 +121,29 @@ export const useHelperWizard = ({ ...props }: IuseHelperWizard) => {
   useEffect(() => {
     navigation.current = props.navigation;
   }, [props.navigation]);
+
+  useEffect(() => {
+    const wizardBodyImage: HTMLImageElement | null =
+      document.querySelector(".instructionImg");
+    const afterLoadingImage = () => {
+      console.log("After Image loaded");
+      if (instructions.current) {
+        placeWizard({
+          nextToId: instructions.current.instruction[step.current].elementId,
+        });
+      }
+    };
+    if (wizardBodyImage) {
+      wizardBodyImage.addEventListener("load", afterLoadingImage);
+    }
+
+    return () => {
+      if (wizardBodyImage) {
+        wizardBodyImage.removeEventListener("load", afterLoadingImage);
+      }
+      window.removeEventListener("resize", afterResize);
+    };
+  }, []);
 
   const setUp = (
     instructionStep,
@@ -220,13 +251,12 @@ export const useHelperWizard = ({ ...props }: IuseHelperWizard) => {
               String(Number(x - (helperRef.current.offsetWidth - width) + 8)) +
               "px";
             toReturn["indicator"]["bottom"] = String(0 - 8) + "px";
-            toReturn["indicator"]["left"] = String(
-              Number(helperRef.current.offsetWidth - 22 - 16) + "px" // 22 is approx arrow width
-            );
+            toReturn["indicator"]["left"] =
+              String(Number(helperRef.current.offsetWidth - 32)) + "px";
           } else {
             toReturn["left"] = String(Number(x - 8)) + "px";
             toReturn["indicator"]["bottom"] = String(0 - 8) + "px";
-            toReturn["indicator"]["left"] = String(Number(x + 2) + "px");
+            toReturn["indicator"]["left"] = String(Number(8)) + "px";
           }
           toReturn["POS"] = "BOTTOM";
         } else {
@@ -237,12 +267,12 @@ export const useHelperWizard = ({ ...props }: IuseHelperWizard) => {
             );
             toReturn["indicator"]["top"] = String(0 - 8) + "px";
             toReturn["indicator"]["left"] = String(
-              Number(helperRef.current.offsetWidth - 22 - 16) + "px" // 22 is approx arrow width
+              Number(helperRef.current.offsetWidth - 32) + "px"
             );
           } else {
             toReturn["left"] = String(Number(x - 8) + "px");
             toReturn["indicator"]["top"] = String(0 - 8) + "px";
-            toReturn["indicator"]["left"] = String(Number(x + 2) + "px");
+            toReturn["indicator"]["left"] = String(Number(8) + "px");
           }
           toReturn["POS"] = "TOP";
         }
@@ -251,9 +281,11 @@ export const useHelperWizard = ({ ...props }: IuseHelperWizard) => {
     );
   };
 
-  const placeWizard = async ({ nextToId }: IPlaceWizard) => {
-    if (!helperRef.current && !nextToId) return;
-    const nextTo: HTMLElement | null = document.getElementById(nextToId);
+  const placeWizard = async ({ nextToId = "" }: IPlaceWizard) => {
+    if (!helperRef.current || !instructions.current) return;
+    const nextTo: HTMLElement | null = document.getElementById(
+      instructions.current.instruction[step.current].elementId
+    );
     if (nextTo) {
       const res = await checkPositionToPlace(nextTo);
       const triangleDown = document.querySelector(
@@ -297,6 +329,7 @@ export const useHelperWizard = ({ ...props }: IuseHelperWizard) => {
         behavior: "smooth",
         block: "center",
       });
+      window.addEventListener("resize", afterResize);
     } else {
       console.log("Unable to find the element to be placed to next");
       // Unable to find the element to be placed to next

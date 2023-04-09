@@ -1,9 +1,10 @@
+import { commonStyles } from "@/shared/utils";
 import styled from "styled-components";
 
 export const Card = styled.div`
   padding: 20px;
   border: 1px solid #ccc;
-  border-radius: 4px;
+  border-radius: ${commonStyles.borderRadius};
 `;
 
 const CLink = Card.withComponent("a");
@@ -16,29 +17,35 @@ export const CardLink = styled(CLink)`
   }
 `;
 
-export interface IInstructionsModal {
-  backgroundColor?: string;
+export interface IStyledButton {
   btnBgcolorhover?: string;
   btntxtcolorhover?: string;
   fontColor?: string;
 }
 
+export interface IInstructionsModal {
+  backgroundColor?: string;
+  fontColor?: string;
+}
+
 export const InstructionsModal = styled.div<IInstructionsModal>`
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
   display: none;
-  max-width: 400px;
-  min-width: 400px;
+  max-width: 350px;
+  min-width: 350px;
   min-height: 50px;
-  background: ${(props) => props.backgroundColor || "#fff"};
+  background: ${(props) => props.backgroundColor || commonStyles.background};
   align-content: center;
   position: absolute;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+  box-shadow: ${commonStyles.boxShadow};
   z-index: 99999999999;
   font-family: "Raleway", sans-serif;
-  border-radius: 4px;
+  border-radius: ${commonStyles.borderRadius};
 
-  p {
-    color: ${(props) => props.fontColor || "#999"} !important;
-  }
   .hide {
     display: none;
   }
@@ -53,8 +60,9 @@ export const InstructionsModal = styled.div<IInstructionsModal>`
       content: "";
       width: 20px;
       height: 20px;
-      background: ${(props) => props.backgroundColor || "#fff"};
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+      background: ${(props) =>
+        props.backgroundColor || commonStyles.background};
+      box-shadow: ${commonStyles.boxShadow};
       transform: rotate(45deg);
       position: absolute;
       top: 6px;
@@ -71,8 +79,9 @@ export const InstructionsModal = styled.div<IInstructionsModal>`
       content: "";
       width: 20px;
       height: 20px;
-      background: ${(props) => props.backgroundColor || "#fff"};
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+      background: ${(props) =>
+        props.backgroundColor || commonStyles.background};
+      box-shadow: ${commonStyles.boxShadow};
       transform: rotate(45deg);
       position: absolute;
       right: 20px;
@@ -91,8 +100,9 @@ export const InstructionsModal = styled.div<IInstructionsModal>`
       content: "";
       width: 20px;
       height: 20px;
-      background: ${(props) => props.backgroundColor || "#fff"};
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+      background: ${(props) =>
+        props.backgroundColor || commonStyles.background};
+      box-shadow: ${commonStyles.boxShadow};
       transform: rotate(45deg);
       position: absolute;
       left: 20px;
@@ -110,31 +120,34 @@ export const InstructionsModal = styled.div<IInstructionsModal>`
       content: "";
       width: 20px;
       height: 20px;
-      background: ${(props) => props.backgroundColor || "#fff"};
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+      background: ${(props) =>
+        props.backgroundColor || commonStyles.background};
+      box-shadow: ${commonStyles.boxShadow};
       transform: rotate(45deg);
       position: absolute;
       bottom: 6px;
     }
   }
-  #closeInstWindow {
-    color: ${(props) => props.fontColor || "#999"} !important;
-  }
+`;
 
-  #nextStep {
-    border: none;
-    background: transparent;
-    border-radius: 6px;
-    color: ${(props) => props.fontColor || "#999"} !important;
-    &:hover,
-    :active {
-      background-color: ${(props) => props.btnBgcolorhover || "blue"};
-      color: ${(props) => props.btntxtcolorhover || "#fff"} !important;
-    }
+export const StyledNextButton = styled("button")<IStyledButton>`
+  border: none;
+  background: transparent;
+  border-radius: ${commonStyles.borderRadius};
+  /* background: blue; */
+  color: ${(props) => props.fontColor || commonStyles.textBody} !important;
+  &:hover,
+  :active {
+    background-color: ${(props) =>
+      props.btnBgcolorhover || commonStyles.primary};
+    color: ${(props) =>
+      props.btntxtcolorhover || commonStyles.background} !important;
   }
-  #backStep {
-    border: none;
-    background: transparent;
-    color: ${(props) => props.fontColor || "#999"} !important;
-  }
+`;
+export const StyledBackButton = styled("button")<IStyledButton>`
+  border: none;
+  background: transparent;
+  border-radius: ${commonStyles.borderRadius};
+  color: ${(props) => props.fontColor || commonStyles.textBody} !important;
+  border: 0.5px solid ${commonStyles.primary};
 `;

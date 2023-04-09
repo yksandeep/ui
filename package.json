@@ -5,6 +5,9 @@
   "main": "dist/cjs/index.js",
   "module": "dist/cjs/index.js",
   "homepage": "https://github.com/yksandeep/ui",
+  "files": [
+    "dist"
+  ],
   "engines": {
     "node": ">=8.12.0",
     "yarn": ">=1.22.19",
@@ -20,7 +23,7 @@
     "storybook": "start-storybook -p 6006",
     "build-storybook": "build-storybook",
     "yalc:publish": "yarn run build && yalc publish --push --no-scripts --yarn",
-    "yalc:watch": "nodemon -e js,ts --ignore 'dist/*/**' --exec \"yarn run build && yalc push --changed\"",
+    "yalc:watch": "nodemon -e js,ts,tsx --ignore 'dist/*/**' --exec \"yarn run build && yalc push --changed\"",
     "build:doc": "rm -rf docs && ./node_modules/.bin/jsdoc --verbose -c ./jsdoc.json",
     "build:doc:watch": "node ./.jsdocbuild/doc_watcher/index.js",
     "create-component": "cd .create-component && yarn && yarn start",

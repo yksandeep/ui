@@ -2,7 +2,7 @@ import { ComponentMeta, ComponentStory } from "@storybook/react";
 import React from "react";
 import styled from "styled-components";
 import HelperWizard, { IHelperWizard } from ".";
-import { useHelperWizard } from "../../../shared/utils/hooks/useHelperWizard";
+import { commonStyles, useHelperWizard } from "../../..";
 import { mockHelperWizardProps } from "./index.mock";
 
 export default {
@@ -15,55 +15,70 @@ export default {
 const StyledBox = styled.div<{ background?: string }>`
   background: ${(props) => (props.background ? props.background : "#000")};
   width: fit-content;
-  padding: 10px;
-  height: 20px;
-  position: absolute;
-  border-radius: 8px;
+  padding: 8px 12px;
+  border-radius: 4px;
+  color: #fff;
 `;
 
 const Template: ComponentStory<typeof HelperWizard> = ({ ...args }) => {
   const { play, helperRef } = useHelperWizard({
     autoplay: false,
-    interval: 5000,
+    interval: 2500,
     navigation: true,
   });
   return (
-    <div style={{ marginTop: "20px" }}>
-      <button
-        onClick={() => {
-          play({
-            title: "How To Fill This Form ?",
-            instruction: [
-              {
-                id: 1,
-                title: "Wassup Enter your Emil Id here ..",
-                elementId: "hello",
-                example: {},
-              },
-              {
-                id: 2,
-                title: "Wassup Enter your password here",
-                elementId: "world1",
-                example: {},
-              },
-              {
-                id: 3,
-                title: "Wassup Enter your password here",
-                elementId: "world",
-                example: {},
-              },
-              {
-                id: 4,
-                title: "Wassup Enter your password here",
-                elementId: "hello1",
-                example: {},
-              },
-            ],
-          });
-        }}
-      >
-        Play
-      </button>
+    <div
+      style={{
+        marginTop: "20px",
+        display: "flex",
+        flexDirection: "column",
+        gap: "10px",
+      }}
+    >
+      <div>
+        <button
+          style={{
+            padding: "4px 8px",
+            color: commonStyles.primary,
+          }}
+          onClick={() => {
+            play({
+              title: "How To Fill This Form ?",
+              instruction: [
+                {
+                  id: 1,
+                  title: "Wassup Enter your Emil Id here ..",
+
+                  elementId: "hello",
+                  example: {
+                    text: "hello there this is a text",
+                  },
+                },
+                {
+                  id: 2,
+                  title: "Wassup Enter your password here",
+                  elementId: "world1",
+                  example: {},
+                },
+                {
+                  id: 3,
+                  title: "Wassup Enter your password here",
+                  elementId: "world",
+                  example: {},
+                },
+                {
+                  id: 4,
+                  title: "Wassup Enter your password here",
+                  elementId: "hello1",
+                  example: {},
+                },
+              ],
+            });
+          }}
+        >
+          Play
+        </button>
+      </div>
       <HelperWizard {...args} helperRef={helperRef} />
       <div
         style={{
@@ -81,8 +96,8 @@ const Template: ComponentStory<typeof HelperWizard> = ({ ...args }) => {
             justifyContent: "space-between",
           }}
         >
-          <p id="hello">hello</p>
-          <p id="world">world</p>
+          <StyledBox id="hello">hello</StyledBox>
+          <StyledBox id="world">world</StyledBox>
         </div>
         <div
           style={{
@@ -91,31 +106,9 @@ const Template: ComponentStory<typeof HelperWizard> = ({ ...args }) => {
             justifyContent: "space-between",
           }}
         >
-          <p id="hello1">hello1</p>
-          {/* <p id="world1">world1</p> */}
+          <StyledBox id="hello1">hello1</StyledBox>
+          <StyledBox id="world1">world1</StyledBox>
         </div>
-      </div>
-      <div style={{ width: "80vw", height: "50vh", position: "relative" }}>
-        <StyledBox id="red" background="red" style={{ left: "0", top: "0" }}>
-          Red
-        </StyledBox>
-        <StyledBox id="blue" background="blue" style={{ right: "0", top: "0" }}>
-          Blue
-        </StyledBox>
-        <StyledBox
-          id="green"
-          background="green"
-          style={{ left: "0", bottom: "0" }}
-        >
-          Green
-        </StyledBox>
-        <StyledBox
-          id="yellow"
-          background="yellow"
-          style={{ right: "0", bottom: "0" }}
-        >
-          Yellow
-        </StyledBox>
       </div>
     </div>
   );

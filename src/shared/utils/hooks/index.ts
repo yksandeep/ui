@@ -1,5 +1,1 @@
-import * as useHelperWizard from "./useHelperWizard"
-
-export {
-    useHelperWizard
-}
+export * from "./useHelperWizard";
