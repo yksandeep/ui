@@ -21,7 +21,7 @@
       "@/src/*": ["src/*"],
       "@/components/*": ["src/components/*"],
       "@/shared/*": ["src/shared/*"],
-      "@/icons/*": ["src/icons/*"],
+      "@/icons/*": ["src/shared/icons/*"],
       "@/types/*": ["src/types/*"]
     }
   },
