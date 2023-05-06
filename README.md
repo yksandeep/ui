@@ -25,9 +25,12 @@ yarn add <Name>
 - Common Styles
 - Components :
   - HelperWizard
+  - Input
 - Hooks :
   - useHelperWizard
+  - useValidator (ajv validator)
+  - useZod (zod validator)
 
 ### TODO :
 
-- Validator
+-
