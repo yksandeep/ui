@@ -126,7 +126,7 @@ export const useHelperWizard = ({ ...props }: IuseHelperWizard) => {
     const wizardBodyImage: HTMLImageElement | null =
       document.querySelector(".instructionImg");
     const afterLoadingImage = () => {
-      console.log("After Image loaded");
+      // console.log("After Image loaded");
       if (instructions.current) {
         placeWizard({
           nextToId: instructions.current.instruction[step.current].elementId,
@@ -333,6 +333,7 @@ export const useHelperWizard = ({ ...props }: IuseHelperWizard) => {
     } else {
       console.log("Unable to find the element to be placed to next");
       // Unable to find the element to be placed to next
+      // TODO
     }
   };
 

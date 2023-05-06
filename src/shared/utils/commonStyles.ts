@@ -1,5 +1,6 @@
 export const commonStyles = {
   primary: "#3f51b5",
+  danger: "#f44336",
   textHeading: "#212121",
   textBody: "#212529",
   textBody_50: "rgba(0,0,0,0.5)",
@@ -8,4 +9,6 @@ export const commonStyles = {
   borderRadius: "4px",
   textHeadingFont: "18px",
   textBodyFont: "16px",
+  errorFont: "14px",
+  hover: "#f4f4f4",
 };

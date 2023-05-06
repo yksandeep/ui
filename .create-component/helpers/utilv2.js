@@ -21,7 +21,7 @@ export function COMPONENT_BASE_DIR_OK({ baseDir, itemsToCheck }) {
     let allFolderPresentInComponentBaseDir = false;
     let dirFiles = await fsPromise.readdir(baseDir);
     dirFiles.forEach((item, idx) => {
-      if (item !== "index.ts") {
+      if (item !== "index.ts" && item !== ".DS_Store") {
         if (itemsToCheck.includes(item)) {
           allFolderPresentInComponentBaseDir = true;
         } else {
