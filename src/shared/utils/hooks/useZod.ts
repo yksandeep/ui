@@ -2,20 +2,20 @@ import { useState } from "react";
 import * as z from "zod";
 
 type ValidationResult<T> = {
-  data?: T;
-  error?: { [key: string]: string[] };
+  data: T | undefined;
+  error: { [K in keyof T]: string[] } | {};
 };
 
 export const useZod = <T>(schema: z.ZodType<T>) => {
   const [value, setValue] = useState<T | undefined>(undefined);
-  const [error, setError] = useState<{ [key: string]: string[] } | {}>({});
+  const [error, setError] = useState<{ [K in keyof T]: string[] } | {}>({});
 
-  function validate(data: unknown): ValidationResult<T> {
+  const validate = (data: T): ValidationResult<T> => {
     try {
       const parsedData = schema.parse(data);
       setValue(parsedData);
       setError({});
-      return { data: parsedData };
+      return { data: parsedData, error: {} };
     } catch (err) {
       const errors = err as z.ZodError;
       const toReturn: { [key: string]: string[] } = {};
@@ -28,9 +28,12 @@ export const useZod = <T>(schema: z.ZodType<T>) => {
       });
       setError(toReturn);
       setValue(undefined);
-      return { error: toReturn };
+      return {
+        data: undefined,
+        error: toReturn as { [K in keyof T]: string[] },
+      };
     }
-  }
+  };
 
   return { value, setValue, error, validate };
 };
