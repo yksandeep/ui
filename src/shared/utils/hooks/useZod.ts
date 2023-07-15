@@ -35,6 +35,6 @@ export const useZod = <T>(schema: z.ZodType<T>) => {
     }
   };
 
-  return { value, setValue, error, validate };
+  return { value, error, validate };
 };
 export default useZod;
