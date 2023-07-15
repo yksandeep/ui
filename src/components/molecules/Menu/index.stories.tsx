@@ -5,7 +5,7 @@ import { LinkMenuItem, MenuItem } from "../../../";
 import { mockMenuProps } from "./index.mock";
 
 export default {
-  title: "Components/Atoms/Menu",
+  title: "Components/Molecules/Menu",
   component: Menu,
   argTypes: {},
 } as ComponentMeta<typeof Menu>;
