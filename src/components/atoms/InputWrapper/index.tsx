@@ -2,13 +2,13 @@ import React from "react";
 
 import { InputError, TextInput } from "@/src/components";
 import type { fieldHasErrorObjT } from "@/src/shared";
-import { InputContainer } from "./index.styled";
+import { InputWrapperContainer } from "./index.styled";
 
 /**
- * IInput Interface
+ * IInputWrapper Interface
  * @interface
  */
-export interface IInput
+export interface IInputWrapper
   extends Omit<React.InputHTMLAttributes<HTMLInputElement>, "name"> {
   selector: string;
   errors: fieldHasErrorObjT;
@@ -16,33 +16,33 @@ export interface IInput
 }
 
 /**
- * Input
+ * InputWrapper
  *
  * @prop string variant
- * @return {React.FC} Input Component
+ * @return {React.FC} InputWrapper Component
  *
  * @component
  * @example
  * return(
- *    <Input sampleTextProp="Input"/>
+ *    <InputWrapper sampleTextProp="InputWrapper"/>
  * )
  */
-export const Input: React.FC<IInput> = ({
+export const InputWrapper: React.FC<IInputWrapper> = ({
   selector,
   errors,
   customInput,
   ...props
 }) => {
   return (
-    <InputContainer>
+    <InputWrapperContainer>
       {customInput ? (
         <>{customInput(selector)}</>
       ) : (
         <TextInput name={selector} {...props} />
       )}
       <InputError selector={selector} errors={errors} />
-    </InputContainer>
+    </InputWrapperContainer>
   );
 };
 
-export default Input;
+export default InputWrapper;

@@ -1,9 +1,9 @@
-import { IInput } from ".";
+import { IInputWrapper } from ".";
 
-const base: IInput = {
+const base: IInputWrapper = {
   selector: "email",
   errors: { email: ["Enter valid Email"] },
-  placeholder: "Email Id",
+  placeholder: "Start typing...",
 };
 
 export const mockInputProps = {
