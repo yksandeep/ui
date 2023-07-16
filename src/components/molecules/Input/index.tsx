@@ -1,7 +1,7 @@
 import React from "react";
 
 import { InputError, TextInput } from "@/src/components";
-import type { fieldHasErrorObjT } from "@/src/shared";
+import type { fieldHasErrorObjT } from "@/src/shared/utils/hooks/useValidator";
 import { InputContainer } from "./index.styled";
 
 /**

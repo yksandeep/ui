@@ -1,5 +1,6 @@
 import { MdWarningAmber } from "@/shared/icons";
-import { commonStyles, fieldHasErrorObjT } from "@/src/shared";
+import { commonStyles } from "@/src/shared";
+import { fieldHasErrorObjT } from "@/src/shared/utils/hooks/useValidator";
 import { useEffect, useState } from "react";
 import { InputErrorContainer } from "./index.styled";
 

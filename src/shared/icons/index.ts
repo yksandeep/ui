@@ -1,1 +1,3 @@
-export * from "react-icons/md";
+import { MdWarningAmber as iconsMdWarningAmber } from "react-icons/md";
+
+export const MdWarningAmber = iconsMdWarningAmber;

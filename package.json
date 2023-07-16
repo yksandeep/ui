@@ -2,8 +2,7 @@
   "name": "@kumar08/uicomponents",
   "version": "1.0.3",
   "description": "",
-  "main": "dist/cjs/index.js",
-  "module": "dist/cjs/index.js",
+  "main": "dist/bundle.js",
   "homepage": "https://github.com/yksandeep/ui",
   "files": [
     "dist"
@@ -16,13 +15,16 @@
   "scripts": {
     "test:lib": "echo \"Error: no test specified\" && exit 1",
     "build": "yarn run build:cjs && tsc-alias -p tsconfig.json --debug",
+    "build:webpack": "webpack --mode development --config webpack.config.js",
+    "build:webpack:prod": "webpack --mode production --config webpack.config.js",
     "build:precommit": "rm -rf testBuild && tsc --outDir testBuild/esm && tsc --module CommonJs --outDir testBuild/cjs && rm -rf testBuild",
     "build:test": "rm -rf testBuild && tsc --outDir testBuild/esm && tsc --module CommonJs --outDir testBuild/cjs",
     "build:esm": "rm -rf ./dist/esm &&  tsc --outDir dist/esm",
     "build:cjs": "rm -rf ./dist/cjs &&  tsc --outDir dist/cjs --module CommonJs",
     "storybook": "start-storybook -p 6006",
     "build-storybook": "build-storybook",
-    "yalc:publish": "yarn run build && yalc publish --push --no-scripts --yarn",
+    "yalc:publish:webpack": "yarn run build:webpack:prod && yalc publish --push --no-scripts --yarn",
+    "yalc:publish:tsc": "yarn run build && yalc publish --push --no-scripts --yarn",
     "yalc:watch": "nodemon -e js,ts,tsx --ignore 'dist/*/**' --exec \"yarn run build && yalc push --changed\"",
     "build:doc": "rm -rf docs && ./node_modules/.bin/jsdoc --verbose -c ./jsdoc.json",
     "build:doc:watch": "node ./.jsdocbuild/doc_watcher/index.js",
@@ -54,6 +56,7 @@
     "@types/react-dom": "^18.0.9",
     "@types/styled-components": "^5.1.26",
     "better-docs": "^2.7.2",
+    "css-loader": "^6.8.1",
     "hound": "^1.0.5",
     "husky": "^8.0.2",
     "jsdoc": "3.6.10",
@@ -65,10 +68,14 @@
     "parcel-resolver-tspaths": "^0.0.9",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "style-loader": "^3.3.3",
+    "ts-loader": "^9.4.4",
     "tsc-alias": "^1.8.4",
-    "tsconfig-paths-webpack-plugin": "^4.0.0",
+    "tsconfig-paths-webpack-plugin": "^4.1.0",
     "typescript": "^4.9.3",
-    "typescript-plugin-css-modules": "^4.1.0"
+    "typescript-plugin-css-modules": "^4.1.0",
+    "webpack": "^5.88.1",
+    "webpack-cli": "^5.1.4"
   },
   "dependencies": {
     "ajv": "^8.12.0",
