@@ -25,7 +25,7 @@ yarn add <Name>
 - Common Styles
 - Components :
   - HelperWizard
-  - Input
+  - Input (Text,Checkbox,Radio)
 - Hooks :
   - useHelperWizard
   - useValidator (ajv validator)
