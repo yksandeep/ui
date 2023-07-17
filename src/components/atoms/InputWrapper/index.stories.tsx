@@ -4,6 +4,7 @@ import { z } from "zod";
 import InputWrapper, { IInputWrapper } from ".";
 import { useZod } from "../../../shared/utils/hooks/useZod";
 import CheckboxInput from "../CheckboxInput";
+import RadioInput from "../RadioInput";
 import { TextInput } from "../TextInput";
 import { mockInputProps } from "./index.mock";
 
@@ -60,9 +61,9 @@ CustomCheckboxInput.args = {
   },
 } as IInputWrapper;
 
-// CustomRadioInput.args = {
-//   ...mockInputProps.base,
-//   customInput: ({ ...props }) => {
-//     return <RadioInput {...props} label="CSS in JS" value="css_in_js" />;
-//   },
-// } as IInputWrapper;
+CustomRadioInput.args = {
+  ...mockInputProps.base,
+  customInput: ({ ...props }) => {
+    return <RadioInput {...props} label="CSS in JS" value="css_in_js" />;
+  },
+} as IInputWrapper;
