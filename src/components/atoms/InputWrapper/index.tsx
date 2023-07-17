@@ -19,8 +19,6 @@ export interface IInputWrapper
 
 /**
  * InputWrapper
- *
- * @prop string variant
  * @return {React.FC} InputWrapper Component
  *
  * @component
@@ -33,16 +31,15 @@ export const InputWrapper: React.FC<IInputWrapper> = ({
   selector,
   errors,
   customInput,
+  onChange,
   ...props
 }) => {
   return (
     <InputWrapperContainer>
       {customInput ? (
-        <>
-          {customInput({ name: selector, onChange: props.onChange, ...props })}
-        </>
+        <>{customInput({ name: selector, onChange: onChange, ...props })}</>
       ) : (
-        <TextInput name={selector} {...props} />
+        <TextInput name={selector} {...props} onChange={onChange} />
       )}
       <InputError selector={selector} errors={errors} />
     </InputWrapperContainer>
