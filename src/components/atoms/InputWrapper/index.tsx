@@ -12,7 +12,9 @@ export interface IInputWrapper
   extends Omit<React.InputHTMLAttributes<HTMLInputElement>, "name"> {
   selector: string;
   errors: fieldHasErrorObjT;
-  customInput?: (name: string) => React.ReactNode;
+  customInput?: (
+    props: Partial<React.InputHTMLAttributes<HTMLInputElement>>
+  ) => React.ReactNode;
 }
 
 /**
@@ -36,7 +38,9 @@ export const InputWrapper: React.FC<IInputWrapper> = ({
   return (
     <InputWrapperContainer>
       {customInput ? (
-        <>{customInput(selector)}</>
+        <>
+          {customInput({ name: selector, onChange: props.onChange, ...props })}
+        </>
       ) : (
         <TextInput name={selector} {...props} />
       )}

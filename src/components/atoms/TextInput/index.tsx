@@ -10,8 +10,6 @@ export interface ITextInput
 
 /**
  * Input
- *
- * @prop string variant
  * @return {React.FC} Input Component
  *
  * @component
