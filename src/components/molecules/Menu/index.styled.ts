@@ -30,7 +30,23 @@ export const StyledMenu = styled.ul<StyledMenuProps>`
     props.hideScroll ? "none" : ""}; /* IE and Edge */
   scrollbar-width: ${(props) => (props.hideScroll ? "none" : "")}; /* Firefox */
 
+  .hover {
+    position: relative;
+    background: ${(props) => (props.hoverEffect ? commonStyles.hover : "")};
+    :after {
+      content: "";
+      height: ${(props) =>
+        props.indicatorSize ? props.indicatorSize : "0.5px"};
+      width: 100%;
+      position: absolute;
+      bottom: 0px;
+      left: 0px;
+      background: ${(props) => (props.indicator ? commonStyles.primary : "")};
+    }
+  }
+
   > :nth-child(n) {
+
     :hover {
       position: relative;
       background: ${(props) => (props.hoverEffect ? commonStyles.hover : "")};

@@ -18,9 +18,9 @@ export interface ITextInput
  *    <Input />
  * )
  */
-export const TextInput: React.FC<ITextInput> = ({ ...props }) => {
+export const TextInput: React.FC<ITextInput> = ({ style, ...props }) => {
   return (
-    <InputContainer>
+    <InputContainer style={style}>
       <StyledInput {...props} />
     </InputContainer>
   );
