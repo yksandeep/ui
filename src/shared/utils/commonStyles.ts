@@ -17,4 +17,7 @@ export const commonStyles = {
   large_px: "25px",
   gap: "16px",
   disabled: "#EEE",
+  fontColor: {
+    bgPrimary: "#fff",
+  },
 };

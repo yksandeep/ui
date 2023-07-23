@@ -65,7 +65,7 @@ export const SelectInput = <T,>({
   const [showDropDown, setShowDropDown] = useState(false);
 
   // tate to keep track of selected keys
-  const [_selectedKeys, setSelectedKeys] = useState<string[]>([]);
+  const [selectedKeys, setSelectedKeys] = useState<string[]>([]);
   // tate to keep track of selected values
   const [selectedValues, setSelectedValues] = useState<string[]>([]);
 
@@ -127,7 +127,7 @@ export const SelectInput = <T,>({
           let prevIdx = newState.indexOf(selected);
           newState.splice(prevIdx, 1);
         }
-        setText(newState.join(seperator));
+        setText(newState.join(seperator) + seperator);
         return newState;
       });
       setSelectedValues((prev) => {
@@ -211,7 +211,7 @@ export const SelectInput = <T,>({
   };
 
   // Handler for TextInput blur event
-  const handleTextInputBlur = () => {
+  const handleTextInputBlur = (e) => {
     setFocusedIndex(-1); // Clear the focusedIndex when the TextInput loses focus
 
     const menuWrapperElement = menuWrapperRef.current;
@@ -230,10 +230,43 @@ export const SelectInput = <T,>({
         }
       }
     }
-    setTimeout(() => {
-      setShowDropDown(false);
-    }, 200);
+    setShowDropDown(false);
   };
+
+  const handleMouseDown = (e) => {
+    // Prevent mousedown event from propagating to the input element
+    e.stopPropagation();
+
+    // Get the mouse location
+    const mouseX = e.clientX;
+    const mouseY = e.clientY;
+
+    // Get the dimensions of the MenuWrapperElement
+    const menuWrapperElement = menuWrapperRef.current;
+    if (menuWrapperElement) {
+      const { top, bottom, left, right } =
+        menuWrapperElement.getBoundingClientRect();
+
+      // Check if the mouse location is inside the MenuWrapperElement
+      if (
+        mouseX >= left &&
+        mouseX <= right &&
+        mouseY >= top &&
+        mouseY <= bottom
+      ) {
+        // If clicked inside the MenuWrapperElement, do not hide the dropdown
+        e.preventDefault();
+        return;
+      }
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener("mousedown", handleMouseDown);
+    return () => {
+      document.removeEventListener("mousedown", handleMouseDown);
+    };
+  }, []);
 
   // Effect to focus the menu or menu items when focusedIndex changes
   useEffect(() => {
@@ -302,12 +335,15 @@ export const SelectInput = <T,>({
             filteredOptions.map((item, i) => {
               return (
                 <MenuItem
+                  className={
+                    selectedKeys.includes(String(item[keyProp])) ? "active" : ""
+                  }
                   style={{ cursor: "pointer" }}
                   key={keyProp ? String(item[keyProp]) : i}
                   data-index={i} // Store the index as data attribute to retrieve later for focusing
                   onClick={() => handleMenuItemClick(i)}
                   onMouseEnter={() => setFocusedIndex(i)}
-                  onBlur={() => handleTextInputBlur()}
+                  onBlur={handleTextInputBlur}
                 >
                   {renderOption
                     ? renderOption({ item, i })
