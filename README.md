@@ -25,7 +25,9 @@ yarn add <Name>
 - Common Styles
 - Components :
   - HelperWizard
-  - Input (Text,Checkbox,Radio)
+  - Input (Text, Checkbox, Radio, Select)
+  - Chip
+  - Loader
 - Hooks :
   - useHelperWizard
   - useValidator (ajv validator)
@@ -33,4 +35,6 @@ yarn add <Name>
 
 ### TODO :
 
--
+- Improve Select Input
+- Form component => props : extends HTMLElement< HTMLFormElement >, initialValues, onSubmit(only once validated), validate
+- HelperWizard (improve positioning)
