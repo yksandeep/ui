@@ -37,7 +37,7 @@ export const StyledMenu = styled.ul<StyledMenuProps>`
     color: ${commonStyles.fontColor.bgPrimary}
   }
   .active.hover{
-    background: ${commonStyles.primary} !important;
+    background: ${commonStyles.primary_light} !important;
     color:${commonStyles.fontColor.bgPrimary} !important;
   }
   .hover {

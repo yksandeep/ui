@@ -132,7 +132,12 @@ export const SelectInput = <T,>({
       });
       setSelectedValues((prev) => {
         const newState = [...prev];
-        newState.push(onChangeValue);
+        if (!newState.includes(onChangeValue)) {
+          newState.push(onChangeValue);
+        } else {
+          let prevIdx = newState.indexOf(onChangeValue);
+          newState.splice(prevIdx, 1);
+        }
         if (onChange) {
           onChange(newState);
         }
@@ -302,7 +307,7 @@ export const SelectInput = <T,>({
 
   return (
     <SelectInputContainer multiple={multiple} style={style}>
-      <input name={name} hidden value={selectedValues} />
+      <input name={name} hidden value={selectedValues} readOnly />
       <InputContainer
         style={{
           width: "100%",

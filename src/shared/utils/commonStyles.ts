@@ -1,5 +1,6 @@
 export const commonStyles = {
   primary: "#3f51b5",
+  primary_light: "#7684cd",
   danger: "#f44336",
   textHeading: "#212121",
   textBody: "#212529",
