@@ -12,7 +12,7 @@ export interface ICheckboxInput
   radioStyle?: "square" | "circle";
   background?: string;
   fullBackground?: boolean;
-  radioSize?: TCheckboxLabelSize;
+  checkbozSize?: TCheckboxLabelSize;
 }
 
 /**
@@ -33,7 +33,7 @@ export const CheckboxInput: React.FC<ICheckboxInput> = ({
   radioStyle,
   background,
   fullBackground,
-  radioSize = "large",
+  checkbozSize = "large",
   ...props
 }) => {
   return (
@@ -42,7 +42,7 @@ export const CheckboxInput: React.FC<ICheckboxInput> = ({
         square={radioStyle === "square"}
         background={background}
         fullBackground={fullBackground}
-        size={radioSize}
+        size={checkbozSize}
       >
         <input type={"checkbox"} {...props} />
         <span></span>
