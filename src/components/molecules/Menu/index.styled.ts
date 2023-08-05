@@ -13,11 +13,12 @@ export type StyledMenuProps = {
 
 export const StyledMenu = styled.ul<StyledMenuProps>`
   margin: 0;
-  padding:0;
+  box-sizing:border-box;
+  padding:4px;
   display: flex;
   background: ${commonStyles.background};
   flex-direction: ${(props) => (props.vertical ? "column" : "row")};
-  gap: ${(props) => props.gap || "4px"};
+  gap: ${(props) => props.gap || "0px"};
   width: ${(props) => props.style?.width || "100%"};
   box-shadow: ${commonStyles.boxShadow};
   justify-content: flex-start;
@@ -56,7 +57,7 @@ export const StyledMenu = styled.ul<StyledMenuProps>`
   }
 
   > :nth-child(n) {
-
+    border-radius:${(props) => !props.indicator && commonStyles.borderRadius};
     :hover {
       position: relative;
       background: ${(props) => (props.hoverEffect ? commonStyles.hover : "")};
