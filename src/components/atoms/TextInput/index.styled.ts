@@ -15,4 +15,5 @@ export const StyledInput = styled.input`
   border: none !important;
   outline: none !important;
   width: 100%;
+  background: transparent;
 `;

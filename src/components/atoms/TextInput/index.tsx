@@ -20,9 +20,12 @@ export interface ITextInput
  */
 export const TextInput: React.FC<ITextInput> = ({ style, ...props }) => {
   return (
-    <InputContainer style={style}>
-      <StyledInput {...props} />
-    </InputContainer>
+    <>
+      <InputContainer style={style}>
+        <StyledInput {...props} />
+      </InputContainer>
+      <br />
+    </>
   );
 };
 
