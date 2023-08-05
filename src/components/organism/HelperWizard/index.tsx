@@ -45,11 +45,11 @@ export const HelperWizard: React.FC<IHelperWizard> = ({
 }) => {
   return (
     <>
-      <link rel="preconnect" href="https://fonts.gstatic.com" />
+      {/* <link rel="preconnect" href="https://fonts.gstatic.com" />
       <link
         href="https://fonts.googleapis.com/css2?family=Raleway:wght@500&display=swap"
         rel="stylesheet"
-      />
+      /> */}
       <InstructionsModal
         fontColor={props.fontColor}
         backgroundColor={props.backgroundColor}
