@@ -18,24 +18,24 @@ export const Custom_1_options = [
 
 const base: ISelectInput<typeof BaseOptions[0]> = {
   options: BaseOptions,
-  valueProp: "id",
-  keyProp: "name",
+  itemToString: (item) => item.name,
+  itemToValue: (item) => item.id,
   filteringKeys: ["name"],
   lable: "Basic select..",
   onChange: (values) => console.log({ values }),
 };
 const custom: ISelectInput<typeof BaseOptions[0]> = {
   options: BaseOptions,
-  keyProp: "name",
-  valueProp: "id",
+  itemToString: (item) => item.name,
+  itemToValue: (item) => item.id,
   filteringKeys: ["name", "age"],
   lable: "With custom render option...",
   onChange: (values) => console.log({ values }),
 };
 const Custom_1: ISelectInput<typeof Custom_1_options[0]> = {
   options: Custom_1_options,
-  keyProp: "key",
-  valueProp: "value",
+  itemToString: (item) => item.key,
+  itemToValue: (item) => item.value,
   lable: "With Array of key value object",
   onChange: (values) => console.log({ values }),
 };

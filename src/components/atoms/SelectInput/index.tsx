@@ -1,27 +1,31 @@
 import { useEffect, useRef, useState } from "react";
-import { MdClose } from "react-icons/md";
+import {
+  MdCheck,
+  MdOutlineExpandLess,
+  MdOutlineExpandMore,
+} from "react-icons/md";
 import { Menu } from "../../molecules";
 import MenuItem from "../MenuItem";
 import { ITextInput } from "../TextInput";
 import { InputContainer, StyledInput } from "../TextInput/index.styled";
 import { MenuWrapper, SelectInputContainer } from "./index.styled";
-
 /**
  * ISelectInput Interface
  * @interface
  */
 export interface ISelectInput<T>
-  extends Omit<ITextInput, "onChange" | "placeholder" | "style"> {
+  extends Omit<ITextInput, "onChange" | "placeholder" | "style" | "value"> {
   options: T[];
-  keyProp: keyof SelectOption<T>;
-  valueProp: keyof SelectOption<T>;
   filteringKeys?: (keyof SelectOption<T>)[];
   renderOption?: ({ item, i }: { item: T; i: number }) => React.ReactNode;
-  itemToString?: (item: T) => string;
+  itemToString: (item: T) => string;
+  itemToValue: (item: T) => string | number;
   lable?: string;
-  onChange?: (value: string[]) => void;
+  onChange?: (value: (string | number)[]) => void;
   style?: React.CSSProperties;
   multiple?: boolean;
+  value?: string;
+  showMenuItemIcon?: boolean;
 }
 type SelectOption<T> = {
   [key in keyof T]: string;
@@ -35,14 +39,12 @@ type SelectOption<T> = {
  * @component
  * @example
  * return(
- *    <SelectInput options=[{key:india,value:'IND'}]>
+ *    <SelectInput options={[{key:'india',value:'IND'}]}>
  * )
  */
 export const SelectInput = <T,>({
   name,
   options,
-  keyProp,
-  valueProp,
   filteringKeys,
   renderOption,
   itemToString,
@@ -50,8 +52,12 @@ export const SelectInput = <T,>({
   onChange,
   style,
   multiple,
+  itemToValue,
+  value,
+  showMenuItemIcon,
   ...props
 }: ISelectInput<T>) => {
+  const currentInputRef = useRef<HTMLInputElement>(null);
   const [seperator] = useState(",");
   // State to keep track of the input text
   const [text, setText] = useState("");
@@ -67,7 +73,34 @@ export const SelectInput = <T,>({
   // tate to keep track of selected keys
   const [selectedKeys, setSelectedKeys] = useState<string[]>([]);
   // tate to keep track of selected values
-  const [selectedValues, setSelectedValues] = useState<string[]>([]);
+  const [selectedValues, setSelectedValues] = useState<(string | number)[]>([]);
+
+  // Helper function to scroll the focused item into view
+  const scrollIntoViewIfNeeded = (index: number) => {
+    const menuWrapperElement = menuWrapperRef.current;
+    if (menuWrapperElement) {
+      // Get the MenuItem element by index within the menu
+      const menuItemElement = menuWrapperElement.querySelector(
+        `[data-index="${index}"]`
+      ) as HTMLElement | null;
+
+      if (menuItemElement) {
+        const menuWrapperRect = menuWrapperElement.getBoundingClientRect();
+        const menuItemRect = menuItemElement.getBoundingClientRect();
+
+        if (menuItemRect.top < menuWrapperRect.top) {
+          // Scroll up if the item is above the visible area
+          menuItemElement.scrollIntoView({
+            block: "start",
+            behavior: "smooth",
+          });
+        } else if (menuItemRect.bottom > menuWrapperRect.bottom) {
+          // Scroll down if the item is below the visible area
+          menuItemElement.scrollIntoView({ block: "end", behavior: "smooth" });
+        }
+      }
+    }
+  };
 
   // Function to filter the options based on the input text
   const filterOptions = (options: T[], text: string) => {
@@ -89,18 +122,14 @@ export const SelectInput = <T,>({
       );
     }
     // If filteringKeys prop is not provided, use valueProp to filter options
-    if (keyProp) {
-      let currentSearch = text;
-      if (multiple) {
-        let alreadySelected = text.split(seperator);
-        currentSearch = alreadySelected[alreadySelected.length - 1];
-      }
-      return options.filter((item) =>
-        String(item[keyProp]).toLowerCase().includes(currentSearch)
-      );
+    let currentSearch = text;
+    if (multiple) {
+      let alreadySelected = text.split(seperator);
+      currentSearch = alreadySelected[alreadySelected.length - 1];
     }
-
-    return options;
+    return options.filter((item) =>
+      itemToString(item).toLowerCase().includes(currentSearch)
+    );
   };
 
   // Get the filtered options based on the current input text
@@ -109,14 +138,12 @@ export const SelectInput = <T,>({
   // Handler for MenuItem click, updates the focusedIndex
   const handleMenuItemClick = (index: number) => {
     setFocusedIndex(index);
-    let selected = "";
-    let onChangeValue = "";
-    if (itemToString) {
-      selected = itemToString(filteredOptions[index]);
-      onChangeValue = itemToString(filteredOptions[index]);
-    } else if (valueProp && keyProp) {
-      onChangeValue = String(filteredOptions[index][valueProp]);
-      selected = String(filteredOptions[index][keyProp]);
+    let selected;
+    let onChangeValue;
+    selected = itemToString(filteredOptions[index]);
+    onChangeValue = itemToValue(filteredOptions[index]);
+    if (typeof onChangeValue === "object") {
+      onChangeValue = JSON.stringify(onChangeValue);
     }
     if (multiple && seperator) {
       setSelectedKeys((prev) => {
@@ -127,7 +154,11 @@ export const SelectInput = <T,>({
           let prevIdx = newState.indexOf(selected);
           newState.splice(prevIdx, 1);
         }
-        setText(newState.join(seperator) + seperator);
+        if (newState.length > 0) {
+          setText(newState.join(seperator) + seperator);
+        } else {
+          setText(newState.join(seperator));
+        }
         return newState;
       });
       setSelectedValues((prev) => {
@@ -182,14 +213,18 @@ export const SelectInput = <T,>({
           text.slice(0, previousSeparatorIndex + 1) +
           text.slice(nextSeparatorIndex + 1);
       }
-      setText(newText);
-      setSelectedKeys(newText.split(seperator));
+      setText(newText.length === 1 && newText === "," ? "" : newText);
+      setSelectedKeys(newText ? newText.split(seperator) : []);
       setSelectedValues((prev) => {
-        const newValue: string[] = [];
+        const newValue: (string | number)[] = [];
         newText.split(seperator).forEach((item) => {
           options.map((opt) => {
-            if (opt[keyProp] === item) {
-              newValue.push(String(opt[valueProp]));
+            if (itemToString(opt) === item) {
+              let toPush = itemToValue(opt);
+              if (typeof toPush === "object") {
+                toPush = JSON.stringify(toPush);
+              }
+              newValue.push(toPush);
             }
           });
         });
@@ -201,12 +236,14 @@ export const SelectInput = <T,>({
       setFocusedIndex((prevIndex) =>
         prevIndex < filteredOptions.length - 1 ? prevIndex + 1 : prevIndex
       );
+      scrollIntoViewIfNeeded(focusedIndex + 1); // Scroll the next item into view
     } else if (e.key === "ArrowUp") {
       e.preventDefault();
       // Move focus up in the menu
       setFocusedIndex((prevIndex) =>
         prevIndex > 0 ? prevIndex - 1 : prevIndex
       );
+      scrollIntoViewIfNeeded(focusedIndex - 1); // Scroll the previous item into view
     } else if (e.key === "Enter") {
       e.preventDefault();
       if (focusedIndex >= 0 && focusedIndex < filteredOptions.length) {
@@ -305,62 +342,103 @@ export const SelectInput = <T,>({
     prevFocusedIndexRef.current = focusedIndex;
   }, [focusedIndex, filteredOptions]);
 
+  useEffect(() => {
+    if (value) {
+      setSelectedKeys((prev) => {
+        const newState: any[] = [];
+        String(value)
+          .split(seperator)
+          .forEach((val) => {
+            options.forEach((item) => {
+              if (itemToValue(item) == val) {
+                newState.push(itemToString(item));
+              }
+            });
+          });
+        setText(newState.join(seperator) + ",");
+        return newState;
+      });
+      setSelectedValues(value.split(seperator));
+    }
+  }, [value]);
   return (
-    <SelectInputContainer multiple={multiple} style={style}>
-      <input name={name} hidden value={selectedValues} readOnly />
-      <InputContainer
-        style={{
-          width: "100%",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        <StyledInput
-          placeholder={lable}
-          onChange={(e) => setText(e.target.value)}
-          onKeyDown={handleKeyDown}
-          onFocus={() => setShowDropDown(true)}
-          onBlur={handleTextInputBlur} // onBlur event handler for TextInput
-          value={text}
-          {...props}
+    <>
+      <SelectInputContainer multiple={multiple} style={style}>
+        <input
+          data-type={`${name}_select`}
+          ref={currentInputRef}
+          name={name}
+          hidden
+          value={String(selectedValues)}
+          readOnly
         />
-        <MdClose
-          style={{ cursor: "pointer" }}
-          onClick={() => {
-            setText("");
-            setSelectedKeys([]);
+        <InputContainer
+          style={{
+            width: "100%",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
           }}
-        />
-      </InputContainer>
+        >
+          <StyledInput
+            placeholder={lable}
+            onChange={(e) => setText(e.target.value)}
+            onKeyDown={handleKeyDown}
+            onFocus={() => setShowDropDown(true)}
+            onBlur={handleTextInputBlur} // onBlur event handler for TextInput
+            value={text}
+            {...props}
+          />
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              flexDirection: "column",
+              boxSizing: "border-box",
+              height: "20px",
+            }}
+          >
+            <MdOutlineExpandLess style={{ marginBottom: "-3px" }} />
+            <MdOutlineExpandMore style={{ marginTop: "-3px" }} />
+          </div>
+        </InputContainer>
 
-      <MenuWrapper ref={menuWrapperRef} onKeyDown={handleKeyDown}>
-        <Menu vertical indicator hoverEffect>
-          {showDropDown &&
-            filteredOptions.map((item, i) => {
-              return (
-                <MenuItem
-                  className={
-                    selectedKeys.includes(String(item[keyProp])) ? "active" : ""
-                  }
-                  style={{ cursor: "pointer" }}
-                  key={keyProp ? String(item[keyProp]) : i}
-                  data-index={i} // Store the index as data attribute to retrieve later for focusing
-                  onClick={() => handleMenuItemClick(i)}
-                  onMouseEnter={() => setFocusedIndex(i)}
-                  onBlur={handleTextInputBlur}
-                >
-                  {renderOption
-                    ? renderOption({ item, i })
-                    : keyProp && !itemToString
-                    ? String(item[keyProp])
-                    : itemToString && itemToString(item)}
-                </MenuItem>
-              );
-            })}
-        </Menu>
-      </MenuWrapper>
-    </SelectInputContainer>
+        <MenuWrapper
+          ref={menuWrapperRef}
+          onKeyDown={handleKeyDown}
+          style={{ zIndex: "9999" }}
+        >
+          <Menu vertical hoverEffect>
+            {showDropDown &&
+              filteredOptions.map((item, i) => {
+                return (
+                  <MenuItem
+                    rightIcon={
+                      selectedKeys.includes(itemToString(item)) ? (
+                        <MdCheck />
+                      ) : (
+                        <></>
+                      )
+                    }
+                    style={{ cursor: "pointer" }}
+                    key={itemToString(item) + `_${i}`}
+                    data-index={i} // Store the index as data attribute to retrieve later for focusing
+                    onClick={() => handleMenuItemClick(i)}
+                    onMouseEnter={() => setFocusedIndex(i)}
+                    onBlur={handleTextInputBlur}
+                  >
+                    {renderOption
+                      ? renderOption({ item, i })
+                      : itemToString(item)}
+                  </MenuItem>
+                );
+              })}
+          </Menu>
+        </MenuWrapper>
+      </SelectInputContainer>
+      <br />
+    </>
   );
 };
 

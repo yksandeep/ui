@@ -14,7 +14,12 @@ export default {
 } as ComponentMeta<typeof SelectInput>;
 
 const Template: ComponentStory<typeof SelectInput> = (args) => (
-  <SelectInput {...args} />
+  <>
+    <SelectInput {...args} />
+    {/* <select>
+      <option>hello</option>
+    </select> */}
+  </>
 );
 
 export const Base = Template.bind({});
@@ -25,6 +30,12 @@ Base.args = {
   ...mockSelectInputProps.base,
   style: {
     width: "50%",
+  },
+  itemToString: (item) => {
+    return String(item.name);
+  },
+  itemToValue: (item) => {
+    item.age;
   },
 } as ISelectInput<typeof BaseOptions[0]>;
 
