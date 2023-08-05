@@ -1,7 +1,7 @@
 import { useState } from "react";
 import * as z from "zod";
 
-type ValidationResult<T> = {
+export type ValidationResult<T> = {
   data: T | undefined;
   error: { [K in keyof T]: string[] } | {};
 };

@@ -24,7 +24,7 @@ export interface IInputWrapper
  * @component
  * @example
  * return(
- *    <InputWrapper sampleTextProp="InputWrapper"/>
+ *    <InputWrapper />
  * )
  */
 export const InputWrapper: React.FC<IInputWrapper> = ({
@@ -42,6 +42,7 @@ export const InputWrapper: React.FC<IInputWrapper> = ({
         <TextInput name={selector} {...props} onChange={onChange} />
       )}
       <InputError selector={selector} errors={errors} />
+      <br />
     </InputWrapperContainer>
   );
 };

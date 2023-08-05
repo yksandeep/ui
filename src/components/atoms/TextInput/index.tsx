@@ -24,7 +24,6 @@ export const TextInput: React.FC<ITextInput> = ({ style, ...props }) => {
       <InputContainer style={style}>
         <StyledInput {...props} />
       </InputContainer>
-      <br />
     </>
   );
 };
