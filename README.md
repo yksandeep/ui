@@ -35,6 +35,7 @@ yarn add <Name>
 
 ### TODO :
 
+- Date picker
+- Tabs
 - Improve Select Input
-- Form component => props : extends HTMLElement< HTMLFormElement >, initialValues, onSubmit(only once validated), validate
 - HelperWizard (improve positioning)
