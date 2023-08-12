@@ -7,6 +7,7 @@ export const InputContainer = styled.div`
   border-radius: ${commonStyles.borderRadius};
   border: 0.5px solid ${commonStyles.primary};
   box-sizing: border-box;
+  position: relative;
 `;
 export const StyledInput = styled.input`
   margin: 0px;
@@ -16,4 +17,19 @@ export const StyledInput = styled.input`
   outline: none !important;
   width: 100%;
   background: transparent;
+`;
+
+export const StyledLabel = styled.span<{ isFocused: boolean }>`
+  position: absolute;
+  top: ${({ isFocused }) => (isFocused ? "-8px" : "5px")};
+  background: #fff;
+  width: fit-content;
+  box-sizing: border-box;
+  left: 8px;
+  font-size: ${({ isFocused }) => (isFocused ? "12px" : "14px")};
+  transition: all 0.2s ease-in-out;
+  color: ${({ isFocused }) =>
+    isFocused ? commonStyles.primary : commonStyles.disabled};
+  pointer-events: none;
+  user-select: none;
 `;
