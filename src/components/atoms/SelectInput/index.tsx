@@ -437,7 +437,6 @@ export const SelectInput = <T,>({
           </Menu>
         </MenuWrapper>
       </SelectInputContainer>
-      <br />
     </>
   );
 };

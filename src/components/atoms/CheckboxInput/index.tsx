@@ -48,7 +48,6 @@ export const CheckboxInput: React.FC<ICheckboxInput> = ({
         <span></span>
         {label}
       </CustomCheckboxLabel>
-      <br />
     </>
   );
 };

@@ -19,17 +19,22 @@ export const StyledInput = styled.input`
   background: transparent;
 `;
 
-export const StyledLabel = styled.span<{ isFocused: boolean }>`
+export const StyledLabel = styled.span<{
+  isFocused: boolean;
+  inputValue: boolean;
+}>`
   position: absolute;
-  top: ${({ isFocused }) => (isFocused ? "-8px" : "5px")};
+  top: ${({ isFocused, inputValue }) =>
+    isFocused || inputValue ? "-8px" : "5px"};
   background: #fff;
   width: fit-content;
   box-sizing: border-box;
   left: 8px;
-  font-size: ${({ isFocused }) => (isFocused ? "12px" : "14px")};
+  font-size: ${({ isFocused, inputValue }) =>
+    isFocused || inputValue ? "12px" : "14px"};
   transition: all 0.2s ease-in-out;
-  color: ${({ isFocused }) =>
-    isFocused ? commonStyles.primary : commonStyles.disabled};
+  color: ${({ isFocused, inputValue }) =>
+    isFocused || inputValue ? commonStyles.primary : commonStyles.disabled};
   pointer-events: none;
   user-select: none;
 `;

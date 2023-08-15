@@ -44,7 +44,6 @@ export const RadioInput: React.FC<IRadioInput> = ({
         <span></span>
         {label}
       </CustomRadioLabel>
-      <br />
     </>
   );
 };

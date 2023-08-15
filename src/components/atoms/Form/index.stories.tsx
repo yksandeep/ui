@@ -1,7 +1,8 @@
 import { ComponentMeta, ComponentStory } from "@storybook/react";
-import React, { useEffect } from "react";
+import React from "react";
 import { z } from "zod";
 import useZod from "../../../shared/utils/hooks/useZod";
+import DatePicker from "../../organism/DatePicker";
 import CheckboxInput from "../CheckboxInput";
 import InputWrapper from "../InputWrapper";
 import RadioInput from "../RadioInput";
@@ -12,8 +13,9 @@ import { Form } from "./index";
 const initValues = {
   email: "",
   "Question:Select 2 milk based product": "",
-  relative: "25",
+  relative: "",
   sendEmail: "",
+  date: "",
 };
 
 export default {
@@ -41,14 +43,36 @@ const Template: ComponentStory<typeof Form> = (args) => {
       sendEmail: z.string().refine((val) => ["YES", "NO"].includes(val), {
         message: "Invalid Selection. Select between Yes or no",
       }),
+      date: z.string().refine(
+        (val) => {
+          if (!val) {
+            return false;
+          }
+          let enableRangeSelection = false;
+          let isInvalid = true;
+          if (enableRangeSelection) {
+            val.split("-").forEach((dateVal) => {
+              try {
+                new Date(dateVal.trim());
+                isInvalid = true;
+              } catch (error) {
+                isInvalid = false;
+              }
+            });
+          } else {
+            try {
+              new Date(val.trim());
+              isInvalid = true;
+            } catch (error) {
+              isInvalid = false;
+            }
+          }
+          return isInvalid;
+        },
+        { message: "Invalid Date" }
+      ),
     })
   );
-
-  useEffect(() => {
-    if (value) {
-      console.log(value);
-    }
-  }, [value]);
 
   return (
     <Form
@@ -67,46 +91,45 @@ const Template: ComponentStory<typeof Form> = (args) => {
                   {...props}
                   placeholder="Start Typing..."
                   name="email"
+                  label="Email"
                 />
               )}
             />
-            <br />
             <InputWrapper
               selector="Question:Select 2 milk based product"
               errors={error}
               customInput={(props) => (
                 <>
-                  <p style={{ margin: 0 }}>Select 2 milk based product</p>
-                  <br />
+                  <p style={{ margin: 0, marginBottom: "8px" }}>
+                    Select 2 milk based product
+                  </p>
                   <CheckboxInput
+                    {...props}
                     checkbozSize={"small"}
                     label="Milk"
                     value={"Milk"}
-                    name="Question:Select 2 milk based product"
                   />
                   <CheckboxInput
+                    {...props}
                     checkbozSize={"small"}
                     label="Curd"
                     value={"Curd"}
-                    name="Question:Select 2 milk based product"
                   />
                   <CheckboxInput
+                    {...props}
                     checkbozSize={"small"}
                     label="Black Coffee"
                     value={"Black Coffee"}
-                    name="Question:Select 2 milk based product"
                   />
                 </>
               )}
             />
-            <br />
-
             <InputWrapper
               selector="relative"
               errors={error}
               customInput={(props) => (
                 <SelectInput
-                  name="relative"
+                  name={props.name}
                   lable="Select...?"
                   multiple
                   value={formProps.values.relative}
@@ -128,15 +151,12 @@ const Template: ComponentStory<typeof Form> = (args) => {
                 />
               )}
             />
-            <br />
-
             <InputWrapper
               selector="sendEmail"
               errors={error}
               customInput={(props) => (
                 <>
-                  <p style={{ margin: 0 }}>Yes or No?</p>
-                  <br />
+                  <p style={{ margin: 0, marginBottom: "8px" }}>Yes or No?</p>
                   <RadioInput
                     radioSize={"small"}
                     label="Yes"
@@ -152,8 +172,14 @@ const Template: ComponentStory<typeof Form> = (args) => {
                 </>
               )}
             />
-            <br />
-
+            <InputWrapper
+              selector="date"
+              errors={error}
+              customInput={(props) => (
+                <DatePicker name={props.name} enableRangeSelection={false} />
+              )}
+            />
+            <input type={"date"} multiple />
             <button type={"submit"}>Submit</button>
             <div>
               <h3>Native Form Values (Using initial values)</h3>

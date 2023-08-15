@@ -48,6 +48,7 @@ export const InputError: React.FC<IInputError> = ({ ...props }) => {
             key={idx}
             data-testid={`${props.selector}-error`}
             style={{
+              marginTop: "4px",
               display: "flex",
               alignItems: "center",
               gap: "4px",

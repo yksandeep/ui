@@ -4,8 +4,10 @@ import { commonStyles } from "@/src/shared";
 import { MdDateRange } from "react-icons/md";
 
 export const CalendarContainer = styled.div<{ show: boolean }>`
+  position: absolute;
   display: ${(props) => (props.show ? "flex" : "none")};
-  flex-direction: column;
+  flex-direction: row;
+  gap: 12px;
   align-items: center;
   border: 1px solid #ccc;
   border-radius: 4px;
@@ -13,7 +15,7 @@ export const CalendarContainer = styled.div<{ show: boolean }>`
   background-color: white;
   box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
   box-sizing: border-box;
-  width: 300px;
+  width: max-content;
 `;
 
 export const CalendarHeader = styled.div`
@@ -70,16 +72,16 @@ export const CalendarDay = styled.div<CalendarDayProps>`
   align-items: center;
   height: 32px;
   font-size: 14px;
-  cursor: pointer;
+  cursor: ${(props) => (props.children ? "pointer" : "initial")};
   border-radius: 50%;
   width: 32px;
   box-sizing: border-box;
   font-size: ${commonStyles.textBodyFont};
   background-color: ${(props) =>
     props.rangeSelected
-      ? props.rangeColor
+      ? props.children && props.rangeColor
       : props.selected
-      ? props.rangeColor
+      ? props.children && props.rangeColor
       : "transparent"};
   color: ${(props) => {
     if (props.selected || props.rangeSelected || props.isCurrentDate) {
@@ -93,6 +95,17 @@ export const CalendarDay = styled.div<CalendarDayProps>`
   transition: background-color 0.1s ease-in-out;
 
   :hover {
+    background-color: ${(props) =>
+      props.isCurrentMonth && !props.selected && !props.rangeSelected
+        ? "#f0f0f0"
+        : props.rangeSelected
+        ? props.rangeColor
+        : props.selected
+        ? props.rangeColor
+        : "transparent"};
+  }
+
+  &.hover {
     background-color: ${(props) =>
       props.isCurrentMonth && !props.selected && !props.rangeSelected
         ? "#f0f0f0"

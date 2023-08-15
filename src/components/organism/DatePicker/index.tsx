@@ -1,5 +1,5 @@
 import { commonStyles } from "@/src/shared";
-import { format } from "date-fns";
+import { addDays, format } from "date-fns";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
   MdCalendarMonth,
@@ -22,6 +22,24 @@ import {
 export const getDaysInMonth = (month, year) => {
   return new Date(year, month + 1, 0).getDate();
 };
+
+// Week initial labels
+export const weekInitials = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+// Array of month names
+export const monthNames = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
+];
 
 // Define a function to convert a Date object to a specified format
 export const convertDateToFormat = (
@@ -51,6 +69,7 @@ export interface IDatePicker {
   label?: string;
   format?: string;
   onChange?: (value: string) => void;
+  name?: string;
 }
 
 /**
@@ -69,13 +88,20 @@ export const DatePicker: React.FC<IDatePicker> = ({
   currentDateColor,
   rangeColor,
   selectedTextColor,
-  label,
+  label = (
+    <div style={{ display: "flex", gap: "4px", alignItems: "center" }}>
+      <MdToday /> {"MM/dd/yyyy"}
+      {enableRangeSelection ? " - MM/dd/yyyy" : ""}
+    </div>
+  ),
   format = "MM/dd/yyyy",
   onChange,
+  name,
   ...props
 }) => {
   const calendarContainer = useRef<HTMLDivElement>(null);
   const [selectedStartDate, setSelectedStartDate] = useState<Date | null>(null);
+  const [hoveredDate, setHoveredDate] = useState<Date | null>(null);
   const [selectedEndDate, setSelectedEndDate] = useState<Date | null>(null);
   const [selectedMonth, setSelectedMonth] = useState<{
     month: number;
@@ -115,6 +141,7 @@ export const DatePicker: React.FC<IDatePicker> = ({
   }
 
   function navigate(direction: -1 | 1) {
+    console.log("navigating");
     if (viewMode === "days") {
       const newMonthDate = new Date(
         selectedYear,
@@ -135,12 +162,13 @@ export const DatePicker: React.FC<IDatePicker> = ({
   }
 
   function renderDays(
+    month = selectedMonth.month,
     currentDateColor = commonStyles.primary,
     rangeColor = commonStyles.danger,
     textColor = "#fff"
   ) {
-    const yearToShow = selectedYear;
-    const monthToShow = selectedMonth.month;
+    const yearToShow = selectedMonth.year;
+    const monthToShow = month;
 
     const daysInMonth = getDaysInMonth(monthToShow, yearToShow);
     const firstDayOfMonth = new Date(yearToShow, monthToShow, 1).getDay();
@@ -167,9 +195,6 @@ export const DatePicker: React.FC<IDatePicker> = ({
       }
     });
 
-    // Week initial labels
-    const weekInitials = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-
     return (
       <CalendarDays>
         {weekInitials.map((initial) => (
@@ -184,18 +209,20 @@ export const DatePicker: React.FC<IDatePicker> = ({
         {daysArray.map((date, index) => {
           const dayNumber = date.getDate();
           const isSelectedStartDate =
-            selectedStartDate && date.getTime() === selectedStartDate.getTime();
+            selectedStartDate &&
+            date.toDateString() === selectedStartDate.toDateString();
           const isSelectedEndDate =
-            selectedEndDate && date.getTime() === selectedEndDate.getTime();
+            selectedEndDate &&
+            date.toDateString() === selectedEndDate.toDateString();
           const isCurrentDate =
             dayNumber === new Date().getDate() &&
-            selectedMonth.month === new Date().getMonth() &&
+            month === new Date().getMonth() &&
             selectedYear === new Date().getFullYear();
           const isCurrentMonth =
             index >= firstDayOfMonth &&
             index < firstDayOfMonth + daysInMonth &&
-            selectedMonth.month === new Date().getMonth() &&
-            selectedYear === new Date().getFullYear();
+            month === date.getMonth() &&
+            selectedYear === date.getFullYear();
 
           let isInRange = false;
           if (enableRangeSelection && selectedStartDate && selectedEndDate) {
@@ -220,13 +247,29 @@ export const DatePicker: React.FC<IDatePicker> = ({
               isCurrentDate={isCurrentDate}
               textColor={textColor}
               onClick={() => {
-                handleDateChange(date);
+                if (isCurrentMonth || !enableRangeSelection) {
+                  if (
+                    selectedStartDate?.toDateString() === date.toDateString()
+                  ) {
+                    setSelectedStartDate(null);
+                  } else {
+                    handleDateChange(date);
+                  }
+                }
               }}
-              className={isCurrentDate ? "current-date" : ""}
+              className={`${isCurrentDate ? "current-date" : ""} ${
+                hoveredDate?.toDateString() === date?.toDateString()
+                  ? "hover"
+                  : ""
+              }`}
               currentDateColor={currentDateColor}
               rangeColor={rangeColor}
             >
-              {dayNumber}
+              {enableRangeSelection
+                ? isCurrentMonth
+                  ? dayNumber
+                  : ""
+                : dayNumber}
             </CalendarDay>
           );
         })}
@@ -290,21 +333,6 @@ export const DatePicker: React.FC<IDatePicker> = ({
     currentDateColor = commonStyles.primary,
     textColor = "#fff"
   ) {
-    // Array of month names
-    const monthNames = [
-      "January",
-      "February",
-      "March",
-      "April",
-      "May",
-      "June",
-      "July",
-      "August",
-      "September",
-      "October",
-      "November",
-      "December",
-    ];
     const monthsWithYears = monthNames.map((monthName, index) => ({
       name: monthName,
       year: selectedYear, // Use the selected year for all months in the month view
@@ -340,10 +368,15 @@ export const DatePicker: React.FC<IDatePicker> = ({
     );
   }
 
-  function renderCalendar() {
+  function renderCalendar(monthToShow = selectedMonth.month) {
     switch (viewMode) {
       case "days":
-        return renderDays(currentDateColor, rangeColor, selectedTextColor);
+        return renderDays(
+          monthToShow,
+          currentDateColor,
+          rangeColor,
+          selectedTextColor
+        );
       case "month":
         return renderMonths(currentDateColor, selectedTextColor);
       case "year":
@@ -390,7 +423,6 @@ export const DatePicker: React.FC<IDatePicker> = ({
   }, []);
 
   useEffect(() => {
-    console.log("onChange");
     if (onChange) {
       if (!enableRangeSelection) {
         onChange(
@@ -417,20 +449,91 @@ export const DatePicker: React.FC<IDatePicker> = ({
     }
   }, [selectedEndDate, selectedStartDate]);
 
+  function moveDate(daysToAdd: number) {
+    const newSelectedDate = addDays(
+      hoveredDate ? hoveredDate : new Date(),
+      daysToAdd
+    );
+    // Check if the newSelectedDate is within the current month
+    const currentMonth = selectedMonth.month;
+    if (newSelectedDate.getMonth() < currentMonth) {
+      // Moving to the previous month
+      navigate(-1);
+    } else if (newSelectedDate.getMonth() > currentMonth) {
+      // Moving to the next month
+      navigate(+1);
+    }
+    setHoveredDate(newSelectedDate);
+  }
+
+  useEffect(() => {
+    const handleKeyDown = (event) => {
+      if (viewMode !== "days") return; // Ensure you're in the days view
+      console.log(event.key);
+      switch (event.key) {
+        case "ArrowLeft":
+          event.preventDefault();
+          moveDate(-1); // Move to previous day
+          break;
+        case "ArrowRight":
+          event.preventDefault();
+          moveDate(1); // Move to next day
+          break;
+        case "ArrowUp":
+          event.preventDefault();
+          moveDate(-7); // Move to same day of previous week
+          break;
+        case "ArrowDown":
+          event.preventDefault();
+          moveDate(7); // Move to same day of next week
+          break;
+        case "Enter":
+          event.preventDefault();
+          console.log(selectedStartDate, hoveredDate);
+          if (
+            selectedStartDate?.toDateString() === hoveredDate?.toDateString()
+          ) {
+            console.log("setting null");
+            setSelectedStartDate(null);
+          } else {
+            setSelectedStartDate(hoveredDate);
+          }
+          break;
+        default:
+          return;
+      }
+    };
+    if (show) {
+      document.addEventListener("keydown", handleKeyDown);
+    }
+    return () => {
+      if (show) {
+        document.removeEventListener("keydown", handleKeyDown);
+      }
+    };
+  }, [
+    selectedYear,
+    selectedMonth.month,
+    viewMode,
+    show,
+    hoveredDate,
+    selectedStartDate,
+  ]);
+
   return (
-    <>
+    <div style={{ position: "relative" }}>
       <TextInput
+        name={name}
         readOnly
         value={
           !enableRangeSelection
-            ? convertDateToFormat(
-                selectedStartDate ? selectedStartDate : new Date(),
-                format
-              )
+            ? selectedStartDate
+              ? convertDateToFormat(selectedStartDate, format)
+              : ""
             : `${convertDateToFormat(
                 selectedStartDate ? selectedStartDate : new Date(),
                 format
-              )}-${convertDateToFormat(
+              )} - ${convertDateToFormat(
                 selectedEndDate
                   ? selectedEndDate
                   : selectedStartDate
@@ -439,57 +542,80 @@ export const DatePicker: React.FC<IDatePicker> = ({
                 format
               )}`
         }
-        inputStyle={{ color: !show ? "#fff" : "" }}
-        label={
-          label
-            ? label
-            : enableRangeSelection
-            ? "MM/dd/yyyy - MM/dd/yyyy"
-            : "MM/dd/yyyy"
-        }
+        label={label}
         onBlur={() => setShow(!show)}
         onFocus={() => setShow(true)}
       />
       <CalendarContainer ref={calendarContainer} show={show}>
-        <MonthHeader>
-          <div
-            role="button"
-            onClick={() => toggleViewMode()}
-            style={{
-              marginRight: "auto",
-              display: "flex",
-              cursor: "pointer",
-              gap: commonStyles.gap,
-            }}
-          >
-            <div>
-              {viewMode === "days" ? (
-                <MdCalendarMonth />
-              ) : viewMode === "month" ? (
-                <MdToday />
-              ) : (
-                <MdDateRange />
-              )}
+        <div>
+          <MonthHeader>
+            <div
+              role="button"
+              onClick={() => toggleViewMode()}
+              style={{
+                marginRight: "auto",
+                display: "flex",
+                cursor: "pointer",
+                gap: commonStyles.gap,
+              }}
+            >
+              <div>
+                {viewMode === "days" ? (
+                  <MdCalendarMonth />
+                ) : viewMode === "month" ? (
+                  <MdToday />
+                ) : (
+                  <MdDateRange />
+                )}
+              </div>
+              {viewMode === "days"
+                ? new Intl.DateTimeFormat("en-US", {
+                    month: "long",
+                    year: "numeric",
+                  }).format(new Date(selectedYear, selectedMonth.month))
+                : viewMode === "month"
+                ? selectedYear
+                : `${yearNavigation - 5}-${yearNavigation + 6}`}
             </div>
-            {viewMode === "days"
-              ? new Intl.DateTimeFormat("en-US", {
-                  month: "long",
-                  year: "numeric",
-                }).format(new Date(selectedYear, selectedMonth.month))
-              : viewMode === "month"
-              ? selectedYear
-              : `${yearNavigation - 5}-${yearNavigation + 6}`}
-          </div>
-          <NavigationButton role="button" onClick={() => navigate(-1)}>
-            <MdKeyboardArrowLeft />
-          </NavigationButton>
-          <NavigationButton role="button" onClick={() => navigate(+1)}>
-            <MdKeyboardArrowRight />
-          </NavigationButton>
-        </MonthHeader>
-        {renderCalendar()}
+            {!enableRangeSelection && viewMode === "days" && (
+              <>
+                <NavigationButton role="button" onClick={() => navigate(-1)}>
+                  <MdKeyboardArrowLeft />
+                </NavigationButton>
+                <NavigationButton role="button" onClick={() => navigate(+1)}>
+                  <MdKeyboardArrowRight />
+                </NavigationButton>
+              </>
+            )}
+          </MonthHeader>
+          {renderCalendar()}
+        </div>
+        {enableRangeSelection &&
+          viewMode === "days" &&
+          selectedMonth.month < 12 && (
+            <div>
+              <MonthHeader>
+                {viewMode === "days" &&
+                  new Intl.DateTimeFormat("en-US", {
+                    month: "long",
+                    year: "numeric",
+                  }).format(new Date(selectedYear, selectedMonth.month + 1))}
+                <NavigationButton
+                  style={{ marginLeft: "auto" }}
+                  role="button"
+                  onClick={() => navigate(-1)}
+                >
+                  <MdKeyboardArrowLeft />
+                </NavigationButton>
+                <NavigationButton role="button" onClick={() => navigate(+1)}>
+                  <MdKeyboardArrowRight />
+                </NavigationButton>
+              </MonthHeader>
+              {renderCalendar(selectedMonth.month + 1)}
+            </div>
+          )}
       </CalendarContainer>
-    </>
+    </div>
   );
 };
 

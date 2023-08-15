@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { InputContainer, StyledInput, StyledLabel } from "./index.styled";
 
 /**
@@ -7,7 +7,7 @@ import { InputContainer, StyledInput, StyledLabel } from "./index.styled";
  */
 export interface ITextInput
   extends React.InputHTMLAttributes<HTMLInputElement> {
-  label?: string;
+  label?: string | React.ReactNode;
   inputStyle?: React.CSSProperties;
 }
 
@@ -29,7 +29,7 @@ export const TextInput: React.FC<ITextInput> = ({
   ...props
 }) => {
   const [isFocused, setIsFocused] = useState(false);
-
+  const styledInputRef = useRef<HTMLInputElement | null>(null);
   // Handle input focus
   const handleFocus = (e) => {
     setIsFocused(true);
@@ -49,13 +49,19 @@ export const TextInput: React.FC<ITextInput> = ({
     <>
       <InputContainer style={style}>
         <StyledInput
+          ref={styledInputRef}
           {...props}
           style={inputStyle}
-          placeholder={isFocused ? placeholder : ""}
+          placeholder={isFocused || !label ? placeholder : ""}
           onFocus={handleFocus}
           onBlur={handleBlur}
         />
-        <StyledLabel isFocused={isFocused}>{label}</StyledLabel>
+        <StyledLabel
+          inputValue={styledInputRef.current?.value ? true : false}
+          isFocused={isFocused}
+        >
+          {label}
+        </StyledLabel>
       </InputContainer>
     </>
   );
