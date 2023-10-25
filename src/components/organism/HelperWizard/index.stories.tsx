@@ -49,7 +49,7 @@ const Template: ComponentStory<typeof HelperWizard> = ({ ...args }) => {
                   id: 1,
                   title: "Wassup Enter your Emil Id here ..",
 
-                  elementId: "hello",
+                  elementId: "#hello",
                   example: {
                     text: "hello there this is a text",
                   },
@@ -57,19 +57,19 @@ const Template: ComponentStory<typeof HelperWizard> = ({ ...args }) => {
                 {
                   id: 2,
                   title: "Wassup Enter your password here",
-                  elementId: "world1",
+                  elementId: "#world1",
                   example: {},
                 },
                 {
                   id: 3,
                   title: "Wassup Enter your password here",
-                  elementId: "world",
+                  elementId: "#world",
                   example: {},
                 },
                 {
                   id: 4,
                   title: "Wassup Enter your password here",
-                  elementId: "hello1",
+                  elementId: "#hello1",
                   example: {},
                 },
               ],

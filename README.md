@@ -25,7 +25,9 @@ yarn add <Name>
 - Common Styles
 - Components :
   - HelperWizard
-  - Input
+  - Input (Text, Checkbox, Radio, Select)
+  - Chip
+  - Loader
 - Hooks :
   - useHelperWizard
   - useValidator (ajv validator)
@@ -33,4 +35,7 @@ yarn add <Name>
 
 ### TODO :
 
--
+- Date picker
+- Tabs
+- Improve Select Input
+- HelperWizard (improve positioning)

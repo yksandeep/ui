@@ -75,7 +75,7 @@ export const useHelperWizard = ({ ...props }: IuseHelperWizard) => {
       function typeWriter(id: string) {
         if (example.placeholder) {
           if (atChar < example.placeholder.length) {
-            const holder = document.getElementById(id) as HTMLInputElement;
+            const holder = document.querySelector(id) as HTMLInputElement;
             holder.placeholder += example.placeholder.charAt(atChar);
             atChar++;
             setTimeout(typeWriter, typeWriterSpeed);
@@ -158,7 +158,7 @@ export const useHelperWizard = ({ ...props }: IuseHelperWizard) => {
       document.querySelector("#nextStep");
     for (let j = 0; j < instructionStep.length; j++) {
       const elemid = instructionStep[j].elementId;
-      const theElem = document.getElementById(elemid) as HTMLInputElement;
+      const theElem = document.querySelector(elemid) as HTMLInputElement;
       if (theElem) {
         theElem.placeholder = "";
       } else {
@@ -223,8 +223,7 @@ export const useHelperWizard = ({ ...props }: IuseHelperWizard) => {
         }
 
         if (!helperRef.current) return;
-        // const imgInput: HTMLImageElement | null =
-        //   document.querySelector(".instructionImg");
+
         function getOffset(el: any): { x: number; y: number } {
           let _x = 0;
           let _y = 0;
@@ -235,21 +234,58 @@ export const useHelperWizard = ({ ...props }: IuseHelperWizard) => {
           }
           return { y: _y, x: _x };
         }
+
         const { width, height } = nextTo.getBoundingClientRect();
         const { x, y } = getOffset(nextTo);
         const toReturn = {
           indicator: {},
         };
-        if (
-          document.body.clientHeight <
-          y + height + helperRef.current.offsetHeight + 16
-        ) {
+        // const bodyHeight = document.body.clientHeight;
+        const bodyWidth = document.body.clientWidth;
+
+        if (x - helperRef.current.offsetWidth - 16 > 0) {
+          // Enough space to the left
+          toReturn["top"] = `${y}px`;
+          toReturn["left"] = `${x - helperRef.current.offsetWidth - 16}px`;
+          toReturn["indicator"]["top"] = `${height / 2}px`;
+          toReturn["indicator"]["left"] = `${
+            helperRef.current.offsetWidth - 32
+          }px`;
+          toReturn["POS"] = "LEFT";
+        } else if (x + width + helperRef.current.offsetWidth + 16 < bodyWidth) {
+          // Enough space to the right
+          toReturn["top"] = `${y}px`;
+          toReturn["left"] = `${x + width + 16}px`;
+          toReturn["indicator"]["top"] = `${height / 2}px`;
+          toReturn["indicator"]["right"] = `${
+            helperRef.current.offsetWidth - 32
+          }px`;
+          toReturn["POS"] = "RIGHT";
+        } else if (y - helperRef.current.offsetHeight - 16 > 0) {
+          // Enough space at the top
+          toReturn["top"] = `${y - helperRef.current.offsetHeight - 16}px`;
+          if (x + helperRef.current.offsetWidth > bodyWidth) {
+            toReturn["left"] = `${
+              x - (helperRef.current.offsetWidth - width) + 8
+            }px`;
+            toReturn["indicator"]["bottom"] = "-8px";
+            toReturn["indicator"]["left"] = `${
+              helperRef.current.offsetWidth - 32
+            }px`;
+          } else {
+            toReturn["left"] = `${x - 8}px`;
+            toReturn["indicator"]["bottom"] = "-8px";
+            toReturn["indicator"]["left"] = "8px";
+          }
+          toReturn["POS"] = "TOP";
+        } else {
+          // No space available, place it at the bottom (default)
           toReturn["top"] =
             String(Number(y - helperRef.current.offsetHeight - 16)) + "px";
-          if (x + helperRef.current.offsetWidth > document.body.clientWidth) {
-            toReturn["left"] =
-              String(Number(x - (helperRef.current.offsetWidth - width) + 8)) +
-              "px";
+          if (x + helperRef.current.offsetWidth > bodyWidth) {
+            toReturn["left"] = String(
+              Number(x - (helperRef.current.offsetWidth - width) + 8) + "px"
+            );
             toReturn["indicator"]["bottom"] = String(0 - 8) + "px";
             toReturn["indicator"]["left"] =
               String(Number(helperRef.current.offsetWidth - 32)) + "px";
@@ -259,23 +295,8 @@ export const useHelperWizard = ({ ...props }: IuseHelperWizard) => {
             toReturn["indicator"]["left"] = String(Number(8)) + "px";
           }
           toReturn["POS"] = "BOTTOM";
-        } else {
-          toReturn["top"] = String(Number(y + height + 16) + "px");
-          if (x + helperRef.current.offsetWidth > document.body.clientWidth) {
-            toReturn["left"] = String(
-              Number(x - (helperRef.current.offsetWidth - width) + 8) + "px"
-            );
-            toReturn["indicator"]["top"] = String(0 - 8) + "px";
-            toReturn["indicator"]["left"] = String(
-              Number(helperRef.current.offsetWidth - 32) + "px"
-            );
-          } else {
-            toReturn["left"] = String(Number(x - 8) + "px");
-            toReturn["indicator"]["top"] = String(0 - 8) + "px";
-            toReturn["indicator"]["left"] = String(Number(8) + "px");
-          }
-          toReturn["POS"] = "TOP";
         }
+
         resolve(toReturn);
       }
     );
@@ -283,7 +304,7 @@ export const useHelperWizard = ({ ...props }: IuseHelperWizard) => {
 
   const placeWizard = async ({ nextToId = "" }: IPlaceWizard) => {
     if (!helperRef.current || !instructions.current) return;
-    const nextTo: HTMLElement | null = document.getElementById(
+    const nextTo: HTMLElement | null = document.querySelector(
       instructions.current.instruction[step.current].elementId
     );
     if (nextTo) {
@@ -298,10 +319,10 @@ export const useHelperWizard = ({ ...props }: IuseHelperWizard) => {
       const triangleRight = document.querySelector(
         ".triangle-right"
       ) as HTMLElement;
-      triangleUp.classList.add("hide");
-      triangleLeft.classList.add("hide");
-      triangleDown.classList.add("hide");
-      triangleRight.classList.add("hide");
+      // triangleUp.classList.add("hide");
+      // triangleLeft.classList.add("hide");
+      // triangleDown.classList.add("hide");
+      // triangleRight.classList.add("hide");
 
       Object.keys(res).map((key) => {
         if (key !== "indicator" && key !== "POS") {
@@ -311,20 +332,70 @@ export const useHelperWizard = ({ ...props }: IuseHelperWizard) => {
         }
       });
       Object.keys(res.indicator).map((indicatorKey) => {
-        if (res["POS"] == "TOP") {
-          triangleDown.classList.add("hide");
-          triangleUp.classList.remove("hide");
-          triangleUp.style[indicatorKey] = res.indicator[indicatorKey];
-        } else if (res["POS"] == "BOTTOM") {
-          triangleDown.classList.remove("hide");
+        console.log({ res: res["POS"] });
+        if (res["POS"] == "BOTTOM") {
           triangleUp.classList.add("hide");
+          triangleLeft.classList.add("hide");
+          triangleRight.classList.add("hide");
+          triangleDown.classList.remove("hide");
           if (indicatorKey == "top") {
             triangleDown.style.bottom = res.indicator["bottom"];
           } else {
             triangleDown.style[indicatorKey] = res.indicator[indicatorKey];
           }
+        } else if (res["POS"] == "TOP") {
+          triangleLeft.classList.add("hide");
+          triangleDown.classList.add("hide");
+          triangleRight.classList.add("hide");
+          triangleUp.classList.remove("hide");
+          triangleUp.style[indicatorKey] = res.indicator[indicatorKey];
+        } else if (res["POS"] === "LEFT") {
+          triangleUp.classList.add("hide");
+          triangleDown.classList.add("hide");
+          triangleRight.classList.remove("hide");
+          triangleLeft.classList.add("hide");
+          triangleDown.style[indicatorKey] = res.indicator[indicatorKey];
+        } else if (res["POS"] === "RIGHT") {
+          triangleUp.classList.add("hide");
+          triangleDown.classList.add("hide");
+          triangleRight.classList.add("hide");
+          triangleLeft.classList.remove("hide");
+          triangleDown.style[indicatorKey] = res.indicator[indicatorKey];
         }
       });
+      // if (res["POS"] === "TOP") {
+      //   triangleDown.classList.add("hide");
+      //   triangleUp.classList.remove("hide");
+      //   Object.keys(res.indicator).map((indicatorKey) => {
+      //     triangleUp.style[indicatorKey] = res.indicator[indicatorKey];
+      //   });
+      // } else if (res["POS"] === "BOTTOM") {
+      //   triangleDown.classList.remove("hide");
+      //   triangleUp.classList.add("hide");
+      //   Object.keys(res.indicator).map((indicatorKey) => {
+      //     if (indicatorKey === "top") {
+      //       triangleDown.style.bottom = res.indicator["bottom"];
+      //     } else {
+      //       triangleDown.style[indicatorKey] = res.indicator[indicatorKey];
+      //     }
+      //   });
+      // } else if (res["POS"] === "LEFT") {
+      // triangleRight.classList.add("hide");
+      // triangleLeft.classList.remove("hide");
+      //   Object.keys(res.indicator).map((indicatorKey) => {
+      //     triangleLeft.style[indicatorKey] = res.indicator[indicatorKey];
+      //   });
+      // } else if (res["POS"] === "RIGHT") {
+      //   triangleRight.classList.remove("hide");
+      //   triangleLeft.classList.add("hide");
+      //   Object.keys(res.indicator).map((indicatorKey) => {
+      //     if (indicatorKey === "left") {
+      //       triangleRight.style.right = res.indicator["right"];
+      //     } else {
+      //       triangleRight.style[indicatorKey] = res.indicator[indicatorKey];
+      //     }
+      //   });
+      // }
       nextTo.scrollIntoView({
         behavior: "smooth",
         block: "center",
@@ -371,7 +442,7 @@ export const useHelperWizard = ({ ...props }: IuseHelperWizard) => {
     if (step.current - 1 >= 0) {
       step.current = step.current - 1;
       const instructionStep = instructions.current.instruction[step.current];
-      const getElement = document.getElementById(
+      const getElement = document.querySelector(
         instructionStep.elementId
       ) as HTMLInputElement;
       if (getElement == null) {
@@ -397,7 +468,7 @@ export const useHelperWizard = ({ ...props }: IuseHelperWizard) => {
       } else {
         step.current = step.current + 1;
         const instructionStep = instructions.current.instruction[step.current];
-        const getElement = document.getElementById(
+        const getElement = document.querySelector(
           instructionStep.elementId
         ) as HTMLInputElement;
         // if the element is nowhere to be found
@@ -422,7 +493,7 @@ export const useHelperWizard = ({ ...props }: IuseHelperWizard) => {
         if (!instructionStep && helperRef.current) {
           helperRef.current.style.display = "none";
         } else {
-          const getElement = document.getElementById(
+          const getElement = document.querySelector(
             instructionStep.elementId
           ) as HTMLInputElement;
           if (getElement == null) {
@@ -520,7 +591,7 @@ export const useHelperWizard = ({ ...props }: IuseHelperWizard) => {
       // return
     }
     const elementId = instructions.current.instruction[step.current].elementId;
-    const getElement = document.getElementById(elementId) as HTMLInputElement;
+    const getElement = document.querySelector(elementId) as HTMLInputElement;
     const li = instructions.current.instruction;
     setUp(li[step.current], takeInput.current, getElement);
   };

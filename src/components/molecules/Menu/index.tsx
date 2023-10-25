@@ -23,7 +23,6 @@ export const Menu: React.FC<IMenu> = ({ ...props }) => {
   const arrayChildren = Children.toArray(props.children);
 
   if (arrayChildren.length === 0) {
-    console.warn("Menu Conmponent is used without any Child");
     return <></>;
   }
   return (
