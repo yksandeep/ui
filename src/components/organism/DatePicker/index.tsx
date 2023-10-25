@@ -22,6 +22,10 @@ import {
 export const getDaysInMonth = (month, year) => {
   return new Date(year, month + 1, 0).getDate();
 };
+// Utility function to format a date in "MMMM dd, yyyy" format
+export const formatDateInLongFormat = (date) => {
+  return format(date, "MMMM dd, yyyy");
+};
 
 // Week initial labels
 export const weekInitials = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
@@ -90,11 +94,11 @@ export const DatePicker: React.FC<IDatePicker> = ({
   selectedTextColor,
   label = (
     <div style={{ display: "flex", gap: "4px", alignItems: "center" }}>
-      <MdToday /> {"MM/dd/yyyy"}
-      {enableRangeSelection ? " - MM/dd/yyyy" : ""}
+      <MdToday /> {"Select Date"}
+      {enableRangeSelection ? " Range" : ""}
     </div>
   ),
-  format = "MM/dd/yyyy",
+  format = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'",
   onChange,
   name,
   ...props
@@ -173,27 +177,32 @@ export const DatePicker: React.FC<IDatePicker> = ({
     const daysInMonth = getDaysInMonth(monthToShow, yearToShow);
     const firstDayOfMonth = new Date(yearToShow, monthToShow, 1).getDay();
 
-    const daysArray = Array.from({ length: 35 }, (_, index) => {
-      if (index < firstDayOfMonth) {
-        const prevMonthLastDay = getDaysInMonth(monthToShow - 1, yearToShow);
-        return new Date(
-          yearToShow,
-          monthToShow - 1,
-          prevMonthLastDay - firstDayOfMonth + index + 1
-        );
-      } else if (
-        index >= firstDayOfMonth &&
-        index < firstDayOfMonth + daysInMonth
-      ) {
-        return new Date(yearToShow, monthToShow, index - firstDayOfMonth + 1);
-      } else {
-        return new Date(
-          yearToShow,
-          monthToShow + 1,
-          index - firstDayOfMonth - daysInMonth + 1
-        );
+    const totalDaysToRender =
+      Math.ceil((firstDayOfMonth + daysInMonth) / 7) * 7; // Calculate the total number of days to render
+    const daysArray = Array.from(
+      { length: enableRangeSelection ? totalDaysToRender : 35 },
+      (_, index) => {
+        if (index < firstDayOfMonth) {
+          const prevMonthLastDay = getDaysInMonth(monthToShow - 1, yearToShow);
+          return new Date(
+            yearToShow,
+            monthToShow - 1,
+            prevMonthLastDay - firstDayOfMonth + index + 1
+          );
+        } else if (
+          index >= firstDayOfMonth &&
+          index < firstDayOfMonth + daysInMonth
+        ) {
+          return new Date(yearToShow, monthToShow, index - firstDayOfMonth + 1);
+        } else {
+          return new Date(
+            yearToShow,
+            monthToShow + 1,
+            index - firstDayOfMonth - daysInMonth + 1
+          );
+        }
       }
-    });
+    );
 
     return (
       <CalendarDays>
@@ -454,8 +463,9 @@ export const DatePicker: React.FC<IDatePicker> = ({
       hoveredDate ? hoveredDate : new Date(),
       daysToAdd
     );
+    console.log(newSelectedDate.getMonth());
     // Check if the newSelectedDate is within the current month
-    const currentMonth = selectedMonth.month;
+    let currentMonth = selectedMonth.month || new Date().getMonth;
     if (newSelectedDate.getMonth() < currentMonth) {
       // Moving to the previous month
       navigate(-1);
@@ -489,15 +499,7 @@ export const DatePicker: React.FC<IDatePicker> = ({
           break;
         case "Enter":
           event.preventDefault();
-          console.log(selectedStartDate, hoveredDate);
-          if (
-            selectedStartDate?.toDateString() === hoveredDate?.toDateString()
-          ) {
-            console.log("setting null");
-            setSelectedStartDate(null);
-          } else {
-            setSelectedStartDate(hoveredDate);
-          }
+          handleDateChange(hoveredDate || new Date());
           break;
         default:
           return;
@@ -524,23 +526,37 @@ export const DatePicker: React.FC<IDatePicker> = ({
     <div style={{ position: "relative" }}>
       <TextInput
         name={name}
+        style={{ display: "none" }}
+        readOnly
+        value={JSON.stringify({
+          startDate: selectedStartDate
+            ? convertDateToFormat(selectedStartDate, format)
+            : "",
+          endDate: selectedEndDate
+            ? convertDateToFormat(selectedEndDate, format)
+            : selectedStartDate
+            ? convertDateToFormat(selectedStartDate, format)
+            : "",
+        })}
+      />
+      <TextInput
         readOnly
         value={
           !enableRangeSelection
             ? selectedStartDate
-              ? convertDateToFormat(selectedStartDate, format)
+              ? formatDateInLongFormat(selectedStartDate)
               : ""
-            : `${convertDateToFormat(
-                selectedStartDate ? selectedStartDate : new Date(),
-                format
-              )} - ${convertDateToFormat(
+            : `${
+                selectedStartDate
+                  ? formatDateInLongFormat(selectedStartDate)
+                  : ""
+              }${
                 selectedEndDate
-                  ? selectedEndDate
+                  ? " - " + formatDateInLongFormat(selectedEndDate)
                   : selectedStartDate
-                  ? selectedStartDate
-                  : new Date(),
-                format
-              )}`
+                  ? " - " + formatDateInLongFormat(selectedStartDate)
+                  : ""
+              }`
         }
         label={label}
         onBlur={() => setShow(!show)}
@@ -568,14 +584,23 @@ export const DatePicker: React.FC<IDatePicker> = ({
                   <MdDateRange />
                 )}
               </div>
-              {viewMode === "days"
-                ? new Intl.DateTimeFormat("en-US", {
+              <div style={{ fontSize: commonStyles.textBodyFont }}>
+                {viewMode === "days"
+                  ? new Intl.DateTimeFormat("en-US", {
+                      month: "long",
+                      year: "numeric",
+                    }).format(new Date(selectedYear, selectedMonth.month))
+                  : viewMode === "month"
+                  ? selectedYear
+                  : `${yearNavigation - 5}-${yearNavigation + 6}`}
+                {"-"}
+                {enableRangeSelection &&
+                  viewMode === "days" &&
+                  new Intl.DateTimeFormat("en-US", {
                     month: "long",
                     year: "numeric",
-                  }).format(new Date(selectedYear, selectedMonth.month))
-                : viewMode === "month"
-                ? selectedYear
-                : `${yearNavigation - 5}-${yearNavigation + 6}`}
+                  }).format(new Date(selectedYear, selectedMonth.month + 1))}
+              </div>
             </div>
             {!enableRangeSelection && viewMode === "days" && (
               <>
@@ -595,11 +620,6 @@ export const DatePicker: React.FC<IDatePicker> = ({
           selectedMonth.month < 12 && (
             <div>
               <MonthHeader>
-                {viewMode === "days" &&
-                  new Intl.DateTimeFormat("en-US", {
-                    month: "long",
-                    year: "numeric",
-                  }).format(new Date(selectedYear, selectedMonth.month + 1))}
                 <NavigationButton
                   style={{ marginLeft: "auto" }}
                   role="button"

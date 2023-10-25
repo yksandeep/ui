@@ -30,6 +30,8 @@ export const StyledLabel = styled.span<{
   width: fit-content;
   box-sizing: border-box;
   left: 8px;
+  width: ${({ isFocused, inputValue }) =>
+    isFocused || inputValue ? "max-content" : "100%"};
   font-size: ${({ isFocused, inputValue }) =>
     isFocused || inputValue ? "12px" : "14px"};
   transition: all 0.2s ease-in-out;

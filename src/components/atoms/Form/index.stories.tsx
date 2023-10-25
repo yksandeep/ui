@@ -48,24 +48,17 @@ const Template: ComponentStory<typeof Form> = (args) => {
           if (!val) {
             return false;
           }
-          let enableRangeSelection = false;
           let isInvalid = true;
-          if (enableRangeSelection) {
-            val.split("-").forEach((dateVal) => {
-              try {
-                new Date(dateVal.trim());
-                isInvalid = true;
-              } catch (error) {
-                isInvalid = false;
-              }
-            });
-          } else {
-            try {
-              new Date(val.trim());
-              isInvalid = true;
-            } catch (error) {
-              isInvalid = false;
+          try {
+            const dates = JSON.parse(val);
+            if ("startDate" in dates && dates.startDate) {
+              new Date(dates.startDate);
             }
+            if ("endsDate" in dates && dates.endDate) {
+              new Date(dates.startDate);
+            }
+          } catch (error) {
+            isInvalid = false;
           }
           return isInvalid;
         },
@@ -78,7 +71,20 @@ const Template: ComponentStory<typeof Form> = (args) => {
     <Form
       initialValues={initValues}
       validation={validate}
-      onSubmit={(val) => console.log(val)}
+      onSubmit={(val) => {
+        // console.log(val.date.split("/")[0].trim());
+        console.log({
+          ...val,
+          // date: {
+          //   start: new Date(val.date.split("/")[0].trim()).toISOString(),
+          //   end: new Date(val.date.split("/")[1].trim()).toISOString(),
+          // },
+        });
+        // console.log({
+        //   start: new Date(val.date.split("/")[0].trim()).toISOString(),
+        //   end: new Date(val.date.split("/")[1].trim()).toISOString(),
+        // });
+      }}
     >
       {(formProps) => {
         return (
@@ -179,11 +185,11 @@ const Template: ComponentStory<typeof Form> = (args) => {
                 <DatePicker name={props.name} enableRangeSelection={false} />
               )}
             />
-            <input type={"date"} multiple />
             <button type={"submit"}>Submit</button>
             <div>
               <h3>Native Form Values (Using initial values)</h3>
               <pre>{JSON.stringify(error, null, 4)}</pre>
+              <pre>{JSON.stringify(value, null, 4)}</pre>
             </div>
           </form>
         );

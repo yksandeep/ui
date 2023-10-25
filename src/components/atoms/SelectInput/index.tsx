@@ -407,7 +407,7 @@ export const SelectInput = <T,>({
         <MenuWrapper
           ref={menuWrapperRef}
           onKeyDown={handleKeyDown}
-          style={{ zIndex: "9999" }}
+          style={{ zIndex: "1" }}
         >
           <Menu vertical hoverEffect>
             {showDropDown &&

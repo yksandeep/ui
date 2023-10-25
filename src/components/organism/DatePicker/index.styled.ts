@@ -8,7 +8,7 @@ export const CalendarContainer = styled.div<{ show: boolean }>`
   display: ${(props) => (props.show ? "flex" : "none")};
   flex-direction: row;
   gap: 12px;
-  align-items: center;
+  align-items: start;
   border: 1px solid #ccc;
   border-radius: 4px;
   padding: 12px;
@@ -99,9 +99,9 @@ export const CalendarDay = styled.div<CalendarDayProps>`
       props.isCurrentMonth && !props.selected && !props.rangeSelected
         ? "#f0f0f0"
         : props.rangeSelected
-        ? props.rangeColor
+        ? props.children && props.rangeColor
         : props.selected
-        ? props.rangeColor
+        ? props.children && props.rangeColor
         : "transparent"};
   }
 
@@ -110,9 +110,9 @@ export const CalendarDay = styled.div<CalendarDayProps>`
       props.isCurrentMonth && !props.selected && !props.rangeSelected
         ? "#f0f0f0"
         : props.rangeSelected
-        ? props.rangeColor
+        ? props.children && props.rangeColor
         : props.selected
-        ? props.rangeColor
+        ? props.children && props.rangeColor
         : "transparent"};
   }
 
